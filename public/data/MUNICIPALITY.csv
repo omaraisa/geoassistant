@@ -1,0 +1,4 @@
+﻿municipality_id,acronym,emirate_id,name_en,name_ar,name_pop_en,name_pop_ar,list_municipality,datasource_type,source_origin,SDE_adres_municipality_area,created_user,created_date,last_edited_user,last_edited_date,shape_Length,shape_Area
+41,ADM,41,Abu Dhabi City,أبوظبي,Abu Dhabi,أبوظبي,,,ADM,,,,,,673671.033399614156224,23053637183.651874542236328
+42,AAM,41,Al Ain City,العين,Al Ain,العين,,,AAM,,,,,,719733.912287167506292,13442246262.145658493041992
+43,WRM,41,Al Dhafra Region,منطقة الظفرة,Al Dhafra Region,منطقة الظفرة,,,WRM,,,,,,1217174.992621537065133,60649763918.503273010253906

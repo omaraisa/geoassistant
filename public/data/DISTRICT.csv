@@ -1,0 +1,3 @@
+﻿district_id,name_en,name_ar,name_pop_en,name_pop_ar,datasource_type,SDE_adres_district_area,municipality_id,munidistrict_id,created_user,created_date,last_edited_user,last_edited_date,municipality_name,shape_Length,shape_Area
+57,AL REEM ISLAND,جزيرة الريم,لايوجد,NONE,planningDrawing,12889332.855498349294066,41,4157,,,,5/8/2025 19:57:09,Abu Dhabi City,14025.183842866346822,12889332.855498872697353
+1330,YAS ISLAND,جزيرة ياس,لايوجد,NONE,planningDrawing,28738344.954183250665665,41,411330,,,,5/8/2025 19:57:05,Abu Dhabi City,23604.657354876042518,28738344.954181831330061
