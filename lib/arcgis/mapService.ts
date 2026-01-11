@@ -1,8 +1,5 @@
-import MapView from '@arcgis/core/views/MapView';
-import Point from '@arcgis/core/geometry/Point';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import Graphic from '@arcgis/core/Graphic';
-import SimpleMarkerSymbol from '@arcgis/core/symbols/SimpleMarkerSymbol';
+import type MapView from '@arcgis/core/views/MapView';
+import type GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 let view: MapView | null = null;
 let highlightLayer: GraphicsLayer | null = null;
@@ -20,15 +17,17 @@ export const locations: Record<string, [number, number]> = {
   'Al Maryah Island': [54.3956, 24.5019]
 };
 
-export function initializeMap(mapView: MapView) {
+export async function initializeMap(mapView: MapView) {
+  const GraphicsLayer = (await import('@arcgis/core/layers/GraphicsLayer')).default;
   view = mapView;
   highlightLayer = new GraphicsLayer();
   view.map?.add(highlightLayer);
 }
 
-export function zoomToLocation(locationName: string) {
+export async function zoomToLocation(locationName: string) {
   if (!view) return;
 
+  const Point = (await import('@arcgis/core/geometry/Point')).default;
   const coords = locations[locationName] || locations[Object.keys(locations).find(k => locationName.includes(k)) || ''];
   
   if (coords) {
@@ -48,9 +47,12 @@ export function zoomToLocation(locationName: string) {
   }
 }
 
-function highlightLocation(point: Point) {
+async function highlightLocation(point: any) {
   if (!highlightLayer) return;
   
+  const SimpleMarkerSymbol = (await import('@arcgis/core/symbols/SimpleMarkerSymbol')).default;
+  const Graphic = (await import('@arcgis/core/Graphic')).default;
+
   highlightLayer.removeAll();
   
   const marker = new SimpleMarkerSymbol({

@@ -1,16 +1,16 @@
 import { google } from '@ai-sdk/google';
-import { streamText, tool } from 'ai';
+import { streamText, tool, convertToModelMessages } from 'ai';
 import { z } from 'zod';
 import { getSalesData, getRentalData, getSupplyData } from '@/lib/data/queries';
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages }: { messages: any[] } = await req.json();
 
   const result = streamText({
     model: google('gemini-1.5-pro-latest'),
-    messages,
+    messages: await convertToModelMessages(messages),
     system: `You are a GeoAI Assistant for Abu Dhabi Real Estate. 
     You have access to real estate data (Sales, Rent, Supply) and can control a map.
     

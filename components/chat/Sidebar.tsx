@@ -2,13 +2,13 @@
 
 import React, { useEffect } from 'react';
 import { Send, Bot, User } from 'lucide-react';
-import { useChat } from 'ai/react';
+import { useChat } from '@ai-sdk/react';
 import { zoomToLocation } from '@/lib/arcgis/mapService';
 import { useAppContext } from '@/components/AppContext';
 import { clsx } from 'clsx';
 
 export default function Sidebar() {
-  const { messages, input, handleInputChange, handleSubmit, toolInvocations } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, toolInvocations, status } = useChat({
     maxSteps: 5,
   });
   
@@ -84,10 +84,12 @@ export default function Sidebar() {
             type='text' 
             placeholder='Ask a question...' 
             className='flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm'
+            disabled={status === 'streaming' || status === 'submitted'}
           />
           <button 
             type='submit'
             className='p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors'
+            disabled={status === 'streaming' || status === 'submitted'}
           >
             <Send size={20} />
           </button>

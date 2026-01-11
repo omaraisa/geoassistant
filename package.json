@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.1",
+    "@ai-sdk/react": "^1.2.12",
     "@arcgis/core": "^4.34.8",
     "@google/generative-ai": "^0.24.1",
     "ai": "^6.0.3",
@@ -21,7 +22,7 @@
     "react-dom": "19.2.3",
     "recharts": "^3.6.0",
     "tailwind-merge": "^3.4.0",
-    "zod": "^4.2.1"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
