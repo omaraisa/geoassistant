@@ -6,10 +6,12 @@
 export interface ParsedQuery {
   intent: string;
   entities: {
+    municipality?: string;
     district?: string;
     district1?: string;
     district2?: string;
     year?: number;
+    quarter?: number;
     budget?: number;
     layout?: string;
     typology?: string;
@@ -22,13 +24,29 @@ export interface ParsedQuery {
 
 // Common district name variations
 const DISTRICT_ALIASES: Record<string, string> = {
+  // Islands
   'yas': 'YAS ISLAND',
   'yas island': 'YAS ISLAND',
   'al reem': 'AL REEM ISLAND',
   'reem': 'AL REEM ISLAND',
+  'reem island': 'AL REEM ISLAND',
   'al reem island': 'AL REEM ISLAND',
   'saadiyat': 'SAADIYAT ISLAND',
   'saadiyat island': 'SAADIYAT ISLAND',
+  'al saadiyat': 'SAADIYAT ISLAND',
+};
+
+// Municipality name mappings
+const MUNICIPALITY_ALIASES: Record<string, string> = {
+  'abu dhabi': 'Abu Dhabi City',
+  'abudhabi': 'Abu Dhabi City',
+  'abu dhabi city': 'Abu Dhabi City',
+  'al ain': 'Al Ain City',
+  'alain': 'Al Ain City',
+  'al ain city': 'Al Ain City',
+  'al dhafra': 'Al Dhafra Region',
+  'dhafra': 'Al Dhafra Region',
+  'western region': 'Al Dhafra Region',
 };
 
 // Layout patterns
@@ -43,9 +61,28 @@ const LAYOUT_PATTERNS = [
 export function parseQuery(question: string): ParsedQuery | null {
   const lower = question.toLowerCase();
   
-  // Extract year
+  // Extract year and quarter
   const yearMatch = lower.match(/\b(20\d{2}|202[0-9])\b/);
-  const year = yearMatch ? parseInt(yearMatch[1]) : undefined;
+  let year = yearMatch ? parseInt(yearMatch[1]) : undefined;
+  
+  // Handle relative time periods
+  const currentYear = new Date().getFullYear();
+  const currentQuarter = Math.floor((new Date().getMonth() + 3) / 3);
+  
+  let quarter: number | undefined;
+  
+  if (lower.includes('last quarter')) {
+    quarter = currentQuarter === 1 ? 4 : currentQuarter - 1;
+    year = year || (currentQuarter === 1 ? currentYear - 1 : currentYear);
+  } else if (lower.includes('this quarter') || lower.includes('current quarter')) {
+    quarter = currentQuarter;
+    year = year || currentYear;
+  } else {
+    const quarterMatch = lower.match(/q(\d)/i);
+    if (quarterMatch) {
+      quarter = parseInt(quarterMatch[1]);
+    }
+  }
   
   // Extract budget
   const budgetMatch = lower.match(/(\d+(?:,\d+)*(?:\.\d+)?)\s*(?:k|thousand|aed)?/i);
@@ -65,10 +102,28 @@ export function parseQuery(question: string): ParsedQuery | null {
     }
   }
   
-  // Extract district(s)
+  // Extract municipality and districts
+  const municipality = extractMunicipality(question);
   const districts = extractDistricts(question);
   
   // Determine intent and tool
+  
+  // Municipality-level sales query
+  if ((lower.includes('total') || lower.includes('value') || lower.includes('sales')) && 
+      municipality && !districts.length) {
+    return {
+      intent: 'municipality_sales',
+      entities: {
+        municipality,
+        year,
+        quarter,
+      },
+      tool: 'get_municipality_sales',
+      confidence: 0.9,
+    };
+  }
+  
+  // Compare sales between districts
   if (lower.includes('compare') && lower.includes('sales') && districts.length >= 2) {
     return {
       intent: 'compare_sales',
@@ -164,13 +219,29 @@ export function parseQuery(question: string): ParsedQuery | null {
 }
 
 /**
+ * Extract municipality name from text
+ */
+function extractMunicipality(text: string): string | undefined {
+  const lower = text.toLowerCase();
+  
+  // Check for municipality aliases
+  for (const [alias, canonical] of Object.entries(MUNICIPALITY_ALIASES)) {
+    if (lower.includes(alias)) {
+      return canonical;
+    }
+  }
+  
+  return undefined;
+}
+
+/**
  * Extract district names from text
  */
 function extractDistricts(text: string): string[] {
   const districts: string[] = [];
   const lower = text.toLowerCase();
   
-  // Check for aliases
+  // Check for aliases first (most reliable)
   for (const [alias, canonical] of Object.entries(DISTRICT_ALIASES)) {
     if (lower.includes(alias)) {
       if (!districts.includes(canonical)) {
@@ -179,29 +250,8 @@ function extractDistricts(text: string): string[] {
     }
   }
   
-  // If we found districts through aliases, return them
-  if (districts.length > 0) {
-    return districts;
-  }
-  
-  // Otherwise, try to extract capitalized phrases
-  const words = text.split(/\s+/);
-  let currentDistrict = '';
-  
-  for (let i = 0; i < words.length; i++) {
-    const word = words[i];
-    if (/^[A-Z]/.test(word) && word.length > 2) {
-      currentDistrict += (currentDistrict ? ' ' : '') + word.toUpperCase();
-    } else if (currentDistrict) {
-      districts.push(currentDistrict);
-      currentDistrict = '';
-    }
-  }
-  
-  if (currentDistrict) {
-    districts.push(currentDistrict);
-  }
-  
+  // Return early if we found districts through aliases
+  // Don't try to extract capitalized words if we already have matches
   return districts;
 }
 

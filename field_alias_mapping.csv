@@ -1,0 +1,218 @@
+Layer,Field_Name,Field_Alias,Description,Data_Type
+MUNICIPALITY,municipality_id,Municipality ID,Unique identifier for municipality,Integer
+MUNICIPALITY,acronym,Municipality Code,Short code for municipality (ADM/AAM/WRM),Text
+MUNICIPALITY,emirate_id,Emirate ID,Emirate identifier,Integer
+MUNICIPALITY,name_en,Municipality Name (English),Official English name of municipality,Text
+MUNICIPALITY,name_ar,Municipality Name (Arabic),Official Arabic name of municipality,Text
+MUNICIPALITY,name_pop_en,Popular Name (English),Common English name,Text
+MUNICIPALITY,name_pop_ar,Popular Name (Arabic),Common Arabic name,Text
+DISTRICT,district_id,District ID,Unique identifier for district,Integer
+DISTRICT,name_en,District Name (English),Official English name of district,Text
+DISTRICT,name_ar,District Name (Arabic),Official Arabic name of district,Text
+DISTRICT,municipality_id,Parent Municipality ID,Municipality containing this district,Integer
+DISTRICT,municipality_name,Parent Municipality,Municipality containing this district,Text
+COMMUNITY,community_id,Community ID,Unique identifier for community,Integer
+COMMUNITY,district_id,Parent District ID,District containing this community,Integer
+COMMUNITY,municipality_id,Parent Municipality ID,Municipality containing this community,Integer
+COMMUNITY,name_en,Community Code,Community code identifier,Text
+COMMUNITY,name_ar,Community Name (Arabic),Arabic name of community,Text
+COMMUNITY,name_pop_en,Community Name (English),English name of community,Text
+COMMUNITY,name_pop_ar,Popular Name (Arabic),Common Arabic name,Text
+COMMUNITY,district_name,Parent District,District containing this community,Text
+COMMUNITY,municipality_name,Parent Municipality,Municipality containing this community,Text
+PROJECT,project_id,Project ID,Unique identifier for project,Integer
+PROJECT,project_num,Project Registration Number,Official project registration number,Text
+PROJECT,project_name,Project Name,Name of development project,Text
+PROJECT,district,District Name,District where project is located,Text
+PROJECT,municipality,Municipality Name,Municipality where project is located,Text
+PROJECT,developer_name,Developer Company,Name of development company,Text
+PROJECT,community,Community Code,Community where project is located,Text
+PROJECT,project_status,Current Status,Current status (Completed/Under Construction/Planned),Text
+PROJECT,expected_completion_date,Expected Completion,Estimated project completion date,Date
+PROJECT,project_value,Total Value (AED),Total estimated value in AED,Double
+PROJECT,dev_type,Development Type,Type of development (Building/Villa/Mixed),Text
+PROJECT,bua_sqm,Built-up Area (sqm),Total built-up area in square meters,Double
+PROJECT,gfa_sqm,Gross Floor Area (sqm),Total gross floor area in square meters,Double
+PLOT,plot_id,Plot ID,Unique identifier for plot,Integer
+PLOT,plot_number,Plot Registration Number,Official plot number,Text
+PLOT,community_id,Parent Community ID,Community containing this plot,Integer
+PLOT,allocation_status,Allocation Status,Whether plot is allocated or available,Text
+PLOT,construction_status,Construction Stage,Current construction state,Text
+PLOT,plot_status,Overall Status,Overall plot status,Text
+PLOT,area_calculated,Plot Area (sqm),Calculated area in square meters,Double
+PLOT,development_type,Permitted Development,Type of permitted development,Text
+PLOT,landuse_code,Land Use Code,Code for permitted land use,Text
+PLOT,elms_landuse_en,Land Use Category (English),English description of land use,Text
+PLOT,elms_landuse_ar,Land Use Category (Arabic),Arabic description of land use,Text
+PLOT,elms_allocation_en,Allocation Category (English),Type of allocation (Investment/Utility/Commercial),Text
+PLOT,elms_allocation_ar,Allocation Category (Arabic),Arabic allocation type,Text
+PLOT,community_name_eng,Community Name (English),Name of community where plot is located,Text
+PLOT,community_name_ara,Community Name (Arabic),Arabic name of community,Text
+PLOT,municipality_name,Parent Municipality,Name of parent municipality,Text
+PLOT,district_id,Parent District ID,Parent district identifier,Integer
+PLOT,district_name,Parent District,Name of parent district,Text
+PLOT,gis_id,GIS Identifier,Geographic information system identifier,Text
+TRANSACTIONS_DISTRICT,municipality,Municipality Name,Name of municipality where transactions occurred,Text
+TRANSACTIONS_DISTRICT,municipality_id,Municipality ID,Municipality identifier,Integer
+TRANSACTIONS_DISTRICT,district,District Name,Name of district where transactions occurred,Text
+TRANSACTIONS_DISTRICT,district_id,District ID,District identifier,Integer
+TRANSACTIONS_DISTRICT,year,Transaction Year,Year when transactions occurred,Integer
+TRANSACTIONS_DISTRICT,typology,Property Category,Type of property (Apartment/Villa/Townhouse/All),Text
+TRANSACTIONS_DISTRICT,layout,Bedrooms Count,Number of bedrooms (1 bed/2 beds/3 beds/4+ beds),Text
+TRANSACTIONS_DISTRICT,transaction_type,Deal Type,Type of transaction (Sale/Mortgage/Gift/All types),Text
+TRANSACTIONS_DISTRICT,value,Total Sales Amount (AED),Total value of all transactions in AED,Double
+TRANSACTIONS_DISTRICT,volume,Transactions Count,Total number of transactions,Integer
+TRANSACTIONS_PROJECT,municipality,Municipality Name,Name of municipality where project is located,Text
+TRANSACTIONS_PROJECT,municipality_id,Municipality ID,Municipality identifier,Integer
+TRANSACTIONS_PROJECT,district,District Name,Name of district where project is located,Text
+TRANSACTIONS_PROJECT,district_id,District ID,District identifier,Integer
+TRANSACTIONS_PROJECT,project_name,Project Name,Name of development project,Text
+TRANSACTIONS_PROJECT,project_id,Project ID,Unique project identifier,Integer
+TRANSACTIONS_PROJECT,project_num,Project Registration Number,Official project number,Text
+TRANSACTIONS_PROJECT,year,Transaction Year,Year when transactions occurred,Integer
+TRANSACTIONS_PROJECT,typology,Property Category,Type of property (Apartment/Villa/Townhouse/All),Text
+TRANSACTIONS_PROJECT,layout,Bedrooms Count,Number of bedrooms (1 bed/2 beds/3 beds/4+ beds),Text
+TRANSACTIONS_PROJECT,transaction_type,Deal Type,Type of transaction (Sale/Mortgage/Gift/All types),Text
+TRANSACTIONS_PROJECT,value,Total Sales Amount (AED),Total value of all transactions in AED,Double
+TRANSACTIONS_PROJECT,volume,Transactions Count,Total number of transactions,Integer
+RENTAL_INDEX_DISTRICT,year,Rental Year,Year of rental data,Integer
+RENTAL_INDEX_DISTRICT,municipality,Municipality Name,Name of municipality,Text
+RENTAL_INDEX_DISTRICT,municipality_id,Municipality ID,Municipality identifier,Integer
+RENTAL_INDEX_DISTRICT,district,District Name,Name of district,Text
+RENTAL_INDEX_DISTRICT,district_id,District ID,District identifier,Integer
+RENTAL_INDEX_DISTRICT,typology,Property Category,Type of property (Apartment/Villa/All),Text
+RENTAL_INDEX_DISTRICT,layout,Bedrooms Count,Number of bedrooms (1 bed/2 beds/3 beds/4+ beds),Text
+RENTAL_INDEX_DISTRICT,rent_type,Contract Type,Type of rental (New/Renewal/All types),Text
+RENTAL_INDEX_DISTRICT,lower_rent_value,Minimum Annual Rent (AED),Minimum rental value in AED per year,Double
+RENTAL_INDEX_DISTRICT,upper_rent_value,Maximum Annual Rent (AED),Maximum rental value in AED per year,Double
+RENTAL_INDEX_DISTRICT,avg_rent_value,Average Annual Rent (AED),Average rental value in AED per year,Double
+RENTAL_INDEX_DISTRICT,lable,Rent Range Label,Formatted rental range label (e.g. 58k),Text
+RENTAL_INDEX_PROJECT,year,Rental Year,Year of rental data,Integer
+RENTAL_INDEX_PROJECT,municipality,Municipality Name,Name of municipality,Text
+RENTAL_INDEX_PROJECT,municipality_id,Municipality ID,Municipality identifier,Integer
+RENTAL_INDEX_PROJECT,district,District Name,Name of district,Text
+RENTAL_INDEX_PROJECT,district_id,District ID,District identifier,Integer
+RENTAL_INDEX_PROJECT,community,Community Code,Community code identifier,Text
+RENTAL_INDEX_PROJECT,community_id,Community ID,Community identifier,Integer
+RENTAL_INDEX_PROJECT,project_id,Project ID,Unique project identifier,Integer
+RENTAL_INDEX_PROJECT,project_number,Project Registration Number,Official project number,Text
+RENTAL_INDEX_PROJECT,project_name,Project Name,Name of development project,Text
+RENTAL_INDEX_PROJECT,typology,Property Category,Type of property (Apartment/Villa/All),Text
+RENTAL_INDEX_PROJECT,layout,Bedrooms Count,Number of bedrooms (1 bed/2 beds/3 beds/4+ beds),Text
+RENTAL_INDEX_PROJECT,rent_type,Contract Type,Type of rental (New/Renewal/All types),Text
+RENTAL_INDEX_PROJECT,lower_rent_value,Minimum Annual Rent (AED),Minimum rental value in AED per year,Double
+RENTAL_INDEX_PROJECT,upper_rent_value,Maximum Annual Rent (AED),Maximum rental value in AED per year,Double
+RENTAL_INDEX_PROJECT,avg_rent_value,Average Annual Rent (AED),Average rental value in AED per year,Double
+RENTAL_INDEX_PROJECT,lable,Rent Range Label,Formatted rental range label,Text
+RENTAL_INDEX_COMMUNITY,year,Rental Year,Year of rental data,Integer
+RENTAL_INDEX_COMMUNITY,municipality,Municipality Name,Name of municipality,Text
+RENTAL_INDEX_COMMUNITY,municipality_id,Municipality ID,Municipality identifier,Integer
+RENTAL_INDEX_COMMUNITY,district,District Name,Name of district,Text
+RENTAL_INDEX_COMMUNITY,district_id,District ID,District identifier,Integer
+RENTAL_INDEX_COMMUNITY,community,Community Code,Community code identifier,Text
+RENTAL_INDEX_COMMUNITY,community_id,Community ID,Community identifier,Integer
+RENTAL_INDEX_COMMUNITY,typology,Property Category,Type of property (Apartment/Villa/All),Text
+RENTAL_INDEX_COMMUNITY,layout,Bedrooms Count,Number of bedrooms (1 bed/2 beds/3 beds/4+ beds),Text
+RENTAL_INDEX_COMMUNITY,rent_type,Contract Type,Type of rental (New/Renewal/All types),Text
+RENTAL_INDEX_COMMUNITY,lower_rent_value,Minimum Annual Rent (AED),Minimum rental value in AED per year,Double
+RENTAL_INDEX_COMMUNITY,upper_rent_value,Maximum Annual Rent (AED),Maximum rental value in AED per year,Double
+RENTAL_INDEX_COMMUNITY,avg_rent_value,Average Annual Rent (AED),Average rental value in AED per year,Double
+RENTAL_INDEX_COMMUNITY,lable,Rent Range Label,Formatted rental range label,Text
+RENT_REVENUE_DISTRICT,year,Revenue Year,Year of rental revenue data,Integer
+RENT_REVENUE_DISTRICT,municipality,Municipality Name,Name of municipality,Text
+RENT_REVENUE_DISTRICT,municipality_id,Municipality ID,Municipality identifier,Integer
+RENT_REVENUE_DISTRICT,district,District Name,Name of district,Text
+RENT_REVENUE_DISTRICT,district_id,District ID,District identifier,Integer
+RENT_REVENUE_DISTRICT,typology,Property Category,Type of property (Apartment/Villa/All),Text
+RENT_REVENUE_DISTRICT,layout,Bedrooms Count,Number of bedrooms (1 bed/2 beds/3 beds/4+ beds),Text
+RENT_REVENUE_DISTRICT,rent_type,Contract Type,Type of rental (New/Renewal/All types),Text
+RENT_REVENUE_DISTRICT,volume,Rental Units Count,Number of rental units,Integer
+RENT_REVENUE_DISTRICT,value,Total Revenue (AED),Total rental revenue in AED,Double
+RENT_REVENUE_PROJECT,year,Revenue Year,Year of rental revenue data,Integer
+RENT_REVENUE_PROJECT,municipality,Municipality Name,Name of municipality,Text
+RENT_REVENUE_PROJECT,municipality_id,Municipality ID,Municipality identifier,Integer
+RENT_REVENUE_PROJECT,district,District Name,Name of district,Text
+RENT_REVENUE_PROJECT,district_id,District ID,District identifier,Integer
+RENT_REVENUE_PROJECT,project_name,Project Name,Name of development project,Text
+RENT_REVENUE_PROJECT,project_id,Project ID,Unique project identifier,Integer
+RENT_REVENUE_PROJECT,project_number,Project Registration Number,Official project number,Text
+RENT_REVENUE_PROJECT,typology,Property Category,Type of property (Apartment/Villa/All),Text
+RENT_REVENUE_PROJECT,layout,Bedrooms Count,Number of bedrooms (1 bed/2 beds/3 beds/4+ beds),Text
+RENT_REVENUE_PROJECT,rent_type,Contract Type,Type of rental (New/Renewal/All types),Text
+RENT_REVENUE_PROJECT,volume,Rental Units Count,Number of rental units,Integer
+RENT_REVENUE_PROJECT,value,Total Revenue (AED),Total rental revenue in AED,Double
+RENT_REVENUE_COMMUNITY,year,Revenue Year,Year of rental revenue data,Integer
+RENT_REVENUE_COMMUNITY,municipality,Municipality Name,Name of municipality,Text
+RENT_REVENUE_COMMUNITY,municipality_id,Municipality ID,Municipality identifier,Integer
+RENT_REVENUE_COMMUNITY,district,District Name,Name of district,Text
+RENT_REVENUE_COMMUNITY,district_id,District ID,District identifier,Integer
+RENT_REVENUE_COMMUNITY,community,Community Code,Community code identifier,Text
+RENT_REVENUE_COMMUNITY,community_id,Community ID,Community identifier,Integer
+RENT_REVENUE_COMMUNITY,typology,Property Category,Type of property (Apartment/Villa/All),Text
+RENT_REVENUE_COMMUNITY,layout,Bedrooms Count,Number of bedrooms (1 bed/2 beds/3 beds/4+ beds),Text
+RENT_REVENUE_COMMUNITY,rent_type,Contract Type,Type of rental (New/Renewal/All types),Text
+RENT_REVENUE_COMMUNITY,volume,Rental Units Count,Number of rental units,Integer
+RENT_REVENUE_COMMUNITY,value,Total Revenue (AED),Total rental revenue in AED,Double
+SUPPLY_DISTRICT,municipality,Municipality Name,Name of municipality,Text
+SUPPLY_DISTRICT,municipality_id,Municipality ID,Municipality identifier,Integer
+SUPPLY_DISTRICT,district,District Name,Name of district,Text
+SUPPLY_DISTRICT,district_id,District ID,District identifier,Integer
+SUPPLY_DISTRICT,supply_demand_year,Supply Data Year,Year of supply data,Integer
+SUPPLY_DISTRICT,typology,Property Category,Type of property (Apartment/Villa/All),Text
+SUPPLY_DISTRICT,layout,Bedrooms Count,Number of bedrooms (1 bed/2 beds/3 beds/4+ beds),Text
+SUPPLY_DISTRICT,total_supply,Available Units,Total number of available units,Integer
+SUPPLY_PROJECT,municipality_id,Municipality ID,Municipality identifier,Integer
+SUPPLY_PROJECT,municipality,Municipality Name,Name of municipality,Text
+SUPPLY_PROJECT,district_id,District ID,District identifier,Integer
+SUPPLY_PROJECT,district,District Name,Name of district,Text
+SUPPLY_PROJECT,project_name,Project Name,Name of development project,Text
+SUPPLY_PROJECT,project_num,Project Registration Number,Official project registration number,Text
+SUPPLY_PROJECT,project_id,Project ID,Unique identifier for project,Integer
+SUPPLY_PROJECT,supply_demand_year,Supply Data Year,Year of supply data,Integer
+SUPPLY_PROJECT,typology,Property Category,Type of property (Apartment/Villa/All),Text
+SUPPLY_PROJECT,layout,Bedrooms Count,Number of bedrooms (1 bed/2 beds/3 beds/All beds),Text
+SUPPLY_PROJECT,total_supply,Available Units,Total number of available units,Integer
+SUPPLY_PROJECT,total_demand,Demanded Units,Total number of demanded units,Integer
+SUPPLY_PROJECT,occupancy_rate,Occupancy Percentage,Occupancy rate percentage,Double
+SUPPLY_COMMUNITY,municipality,Municipality Name,Name of municipality,Text
+SUPPLY_COMMUNITY,municipality_id,Municipality ID,Municipality identifier,Integer
+SUPPLY_COMMUNITY,district,District Name,Name of district,Text
+SUPPLY_COMMUNITY,district_id,District ID,District identifier,Integer
+SUPPLY_COMMUNITY,community,Community Code,Community code identifier,Text
+SUPPLY_COMMUNITY,community_id,Community ID,Community identifier,Integer
+SUPPLY_COMMUNITY,supply_demand_year,Supply Data Year,Year of supply data,Integer
+SUPPLY_COMMUNITY,typology,Property Category,Type of property (Apartment/Villa/All),Text
+SUPPLY_COMMUNITY,layout,Bedrooms Count,Number of bedrooms (1 bed/2 beds/3 beds/4+ beds),Text
+SUPPLY_COMMUNITY,total_supply,Available Units,Total number of available units,Integer
+SUPPLY_PLOT,municipality,Municipality Name,Name of municipality,Text
+SUPPLY_PLOT,municipality_id,Municipality ID,Municipality identifier,Integer
+SUPPLY_PLOT,district,District Name,Name of district,Text
+SUPPLY_PLOT,district_id,District ID,District identifier,Integer
+SUPPLY_PLOT,community,Community Code,Community code identifier,Text
+SUPPLY_PLOT,community_id,Community ID,Community identifier,Integer
+SUPPLY_PLOT,plot_number,Plot Registration Number,Official plot number,Text
+SUPPLY_PLOT,gis_id,GIS Identifier,Geographic information system identifier,Text
+SUPPLY_PLOT,supply_demand_year,Supply Data Year,Year of supply data,Integer
+SUPPLY_PLOT,typology,Property Category,Type of property (Residential/Commercial/etc),Text
+SUPPLY_PLOT,layout,Bedrooms Count,Number of bedrooms,Text
+SUPPLY_PLOT,total_supply,Available Units,Total number of available units on plot,Integer
+SALE_RATES_DISTRICT,municipality,Municipality Name,Name of municipality,Text
+SALE_RATES_DISTRICT,municipality_id,Municipality ID,Municipality identifier,Integer
+SALE_RATES_DISTRICT,district,District Name,Name of district,Text
+SALE_RATES_DISTRICT,district_id,District ID,District identifier,Integer
+SALE_RATES_DISTRICT,year,Sale Rate Year,Year of sale rate data,Integer
+SALE_RATES_DISTRICT,typology,Property Category,Type of property (Apartment/Villa/Villa Plot),Text
+SALE_RATES_DISTRICT,layout,Bedrooms Count,Number of bedrooms (may be empty for plots),Text
+SALE_RATES_DISTRICT,sale_rate,Price per sqm (AED),Average sale price per square meter in AED,Double
+SALE_RATES_DISTRICT,lable,Sale Rate Range,Formatted sale rate range label (e.g. 12k-16k),Text
+SALE_RATES_PROJECT,municipality,Municipality Name,Name of municipality,Text
+SALE_RATES_PROJECT,municipality_id,Municipality ID,Municipality identifier,Integer
+SALE_RATES_PROJECT,district,District Name,Name of district,Text
+SALE_RATES_PROJECT,district_id,District ID,District identifier,Integer
+SALE_RATES_PROJECT,project_number,Project Registration Number,Official project number,Text
+SALE_RATES_PROJECT,project_id,Project ID,Unique project identifier,Integer
+SALE_RATES_PROJECT,project_name,Project Name,Name of development project,Text
+SALE_RATES_PROJECT,year,Sale Rate Year,Year of sale rate data,Integer
+SALE_RATES_PROJECT,typology,Property Category,Type of property (Apartment/Villa/Villa Plot),Text
+SALE_RATES_PROJECT,sale_rate,Price per sqm (AED),Average sale price per square meter in AED,Double
+SALE_RATES_PROJECT,lable,Sale Rate Range,Formatted sale rate range label,Text

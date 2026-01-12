@@ -10,6 +10,7 @@ import { arcgisClient } from './dataLoader.js';
 import * as salesQueries from './queries/salesQueries.js';
 import * as rentalQueries from './queries/rentalQueries.js';
 import * as supplyQueries from './queries/supplyQueries.js';
+import * as municipalityQueries from './queries/municipalityQueries.js';
 
 /**
  * Real Estate MCP Server
@@ -148,6 +149,34 @@ class RealEstateMCPServer {
                 layout: { type: 'string', description: 'Bedroom layout (optional)' },
               },
               required: ['district', 'year'],
+            },
+          },
+          {
+            name: 'get_municipality_sales',
+            description: 'Get total sales data for an entire municipality (Abu Dhabi City, Al Ain City, or Al Dhafra Region) - aggregates all districts',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                municipality: { 
+                  type: 'string', 
+                  description: 'Municipality name (e.g., "Abu Dhabi City", "Al Ain City")' 
+                },
+                year: { type: 'number', description: 'Year (optional)' },
+              },
+              required: ['municipality'],
+            },
+          },
+          {
+            name: 'get_top_districts_in_municipality',
+            description: 'Get top districts by sales value within a municipality',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                municipality: { type: 'string', description: 'Municipality name' },
+                year: { type: 'number', description: 'Year' },
+                limit: { type: 'number', description: 'Number of top districts to return (default 5)' },
+              },
+              required: ['municipality', 'year'],
             },
           },
         ],
@@ -303,6 +332,34 @@ class RealEstateMCPServer {
                     `  ${r.layout || 'All'} (${r.typology}): ${r.totalSupply.toLocaleString()} units`
                   ).join('\n') +
                   (result.results.length > 5 ? `\n... and ${result.results.length - 5} more categories` : ''),
+              },
+            ],
+          };
+        }
+
+        if (name === 'get_municipality_sales') {
+          const { municipality, year } = args as any;
+          const result = await municipalityQueries.getTotalSalesByMunicipality(municipality, year);
+          
+          return {
+            content: [
+              {
+                type: 'text',
+                text: result,
+              },
+            ],
+          };
+        }
+
+        if (name === 'get_top_districts_in_municipality') {
+          const { municipality, year, limit } = args as any;
+          const result = await municipalityQueries.getTopDistrictsByMunicipality(municipality, year, limit || 5);
+          
+          return {
+            content: [
+              {
+                type: 'text',
+                text: result,
               },
             ],
           };
