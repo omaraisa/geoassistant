@@ -32,9 +32,13 @@ export class RealEstateMCPClient {
     );
 
     // Create transport
+    // Use absolute path to ensure correct location
+    const mcpServerPath = require('path').resolve(process.cwd(), 'mcp-server', 'dist', 'index.js');
+    console.log('[MCP Client] MCP server path:', mcpServerPath);
+    
     this.transport = new StdioClientTransport({
       command: 'node',
-      args: ['../mcp-server/dist/index.js'],
+      args: [mcpServerPath],
     });
 
     // Connect
