@@ -1,0 +1,22 @@
+{
+  "name": "real-estate-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server for Real Estate Data Queries",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc && node dist/index.js",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "papaparse": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/papaparse": "^5.3.15",
+    "typescript": "^5.7.3"
+  }
+}
