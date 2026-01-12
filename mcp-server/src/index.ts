@@ -7,6 +7,9 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { arcgisClient } from './dataLoader.js';
+import * as salesQueries from './queries/salesQueries.js';
+import * as rentalQueries from './queries/rentalQueries.js';
+import * as supplyQueries from './queries/supplyQueries.js';
 
 /**
  * Real Estate MCP Server
@@ -82,6 +85,71 @@ class RealEstateMCPServer {
               },
             },
           },
+          {
+            name: 'get_total_sales_value',
+            description: 'Get total sales value and volume for a district/year',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                district: { type: 'string', description: 'District name' },
+                year: { type: 'number', description: 'Year (e.g., 2024)' },
+                typology: { type: 'string', description: 'Property type (optional)' },
+                layout: { type: 'string', description: 'Bedroom layout (optional, e.g., "3 beds")' },
+              },
+              required: ['district'],
+            },
+          },
+          {
+            name: 'get_transaction_count',
+            description: 'Get number of transactions in a district/year',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                district: { type: 'string', description: 'District name' },
+                year: { type: 'number', description: 'Year' },
+              },
+              required: ['district', 'year'],
+            },
+          },
+          {
+            name: 'compare_sales_between_districts',
+            description: 'Compare sales data between two districts',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                district1: { type: 'string', description: 'First district name' },
+                district2: { type: 'string', description: 'Second district name' },
+                year: { type: 'number', description: 'Year (optional)' },
+              },
+              required: ['district1', 'district2'],
+            },
+          },
+          {
+            name: 'find_units_by_budget',
+            description: 'Find rental units within a budget',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                budget: { type: 'number', description: 'Maximum budget in AED' },
+                layout: { type: 'string', description: 'Bedroom layout (e.g., "3 beds")' },
+                year: { type: 'number', description: 'Year (optional)' },
+              },
+              required: ['budget', 'layout'],
+            },
+          },
+          {
+            name: 'get_current_supply',
+            description: 'Get current housing supply for a district',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                district: { type: 'string', description: 'District name' },
+                year: { type: 'number', description: 'Year' },
+                layout: { type: 'string', description: 'Bedroom layout (optional)' },
+              },
+              required: ['district', 'year'],
+            },
+          },
         ],
       };
     });
@@ -141,6 +209,100 @@ class RealEstateMCPServer {
               {
                 type: 'text',
                 text: `Found ${communities.length} communities${district ? ` in ${district}` : ''}:\n${JSON.stringify(communityList.slice(0, 10), null, 2)}${communities.length > 10 ? `\n... and ${communities.length - 10} more` : ''}`,
+              },
+            ],
+          };
+        }
+
+        if (name === 'get_total_sales_value') {
+          const { district, year, typology, layout } = args as any;
+          const result = await salesQueries.getTotalSalesValue({ district, year, typology, layout });
+          
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `Sales Data for ${district}${year ? ` in ${year}` : ''}:\n` +
+                  `Total Value: AED ${result.totalValue.toLocaleString()}\n` +
+                  `Total Volume: ${result.totalVolume.toLocaleString()} transactions\n` +
+                  `Average Price: AED ${result.totalVolume > 0 ? Math.round(result.totalValue / result.totalVolume).toLocaleString() : 0}`,
+              },
+            ],
+          };
+        }
+
+        if (name === 'get_transaction_count') {
+          const { district, year } = args as any;
+          const result = await salesQueries.getTransactionCount({ district, year });
+          
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `Transactions in ${district} for ${year}:\n` +
+                  `Total: ${result.totalTransactions.toLocaleString()} transactions\n` +
+                  `Data records: ${result.recordCount}`,
+              },
+            ],
+          };
+        }
+
+        if (name === 'compare_sales_between_districts') {
+          const { district1, district2, year } = args as any;
+          const result = await salesQueries.compareSalesBetweenDistricts(district1, district2, year);
+          
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `Sales Comparison${year ? ` for ${year}` : ''}:\n\n` +
+                  `${district1}:\n` +
+                  `  Value: AED ${result.district1.totalValue.toLocaleString()}\n` +
+                  `  Volume: ${result.district1.totalVolume.toLocaleString()} transactions\n\n` +
+                  `${district2}:\n` +
+                  `  Value: AED ${result.district2.totalValue.toLocaleString()}\n` +
+                  `  Volume: ${result.district2.totalVolume.toLocaleString()} transactions\n\n` +
+                  `Difference:\n` +
+                  `  ${district1} has ${result.comparison.valuePercentDiff > 0 ? 'higher' : 'lower'} sales by ${Math.abs(result.comparison.valuePercentDiff).toFixed(1)}%`,
+              },
+            ],
+          };
+        }
+
+        if (name === 'find_units_by_budget') {
+          const { budget, layout, year } = args as any;
+          const result = await rentalQueries.findUnitsByBudget(budget, layout, year);
+          
+          const districts = result.results.map(r => `${r.district} (avg: AED ${Math.round(r.avgRent).toLocaleString()})`);
+          
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `Units within AED ${budget.toLocaleString()} budget for ${layout}:\n\n` +
+                  `Found ${result.count} options:\n` +
+                  districts.slice(0, 10).join('\n') +
+                  (districts.length > 10 ? `\n... and ${districts.length - 10} more` : ''),
+              },
+            ],
+          };
+        }
+
+        if (name === 'get_current_supply') {
+          const { district, year, layout } = args as any;
+          const result = await supplyQueries.getCurrentSupplyByCommunity({ district, year, layout });
+          
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `Supply in ${district} for ${year}:\n` +
+                  `Total Units: ${result.totalSupply.toLocaleString()}\n` +
+                  `Breakdown:\n` +
+                  result.results.slice(0, 5).map(r => 
+                    `  ${r.layout || 'All'} (${r.typology}): ${r.totalSupply.toLocaleString()} units`
+                  ).join('\n') +
+                  (result.results.length > 5 ? `\n... and ${result.results.length - 5} more categories` : ''),
               },
             ],
           };
