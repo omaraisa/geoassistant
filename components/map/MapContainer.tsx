@@ -13,10 +13,19 @@ export default function MapContainer() {
       const initArcGIS = async () => {
         const Map = (await import('@arcgis/core/Map')).default;
         const MapView = (await import('@arcgis/core/views/MapView')).default;
+        const MapImageLayer = (await import('@arcgis/core/layers/MapImageLayer')).default;
 
         const map = new Map({
           basemap: 'gray-vector' // Professional look
         });
+
+        // Add the RealStates map service
+        const realStatesLayer = new MapImageLayer({
+          url: 'https://localhost:6443/arcgis/rest/services/RealStates/MapServer',
+          opacity: 0.8
+        });
+
+        map.add(realStatesLayer);
 
         const mapView = new MapView({
           container: mapDiv.current!,
