@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -14,6 +14,29 @@ export default function Sidebar() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isLoading]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e as any);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+    // Auto-resize textarea
+    e.target.style.height = 'auto';
+    e.target.style.height = e.target.scrollHeight + 'px';
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,12 +45,13 @@ export default function Sidebar() {
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: input.trim(),
+      content: input,
     };
 
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
+    scrollToBottom();
 
     try {
       const response = await fetch('/api/chat', {
@@ -107,21 +131,23 @@ export default function Sidebar() {
             </div>
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
 
       <div className='p-4 border-t border-gray-200 bg-white'>
         <form onSubmit={handleSubmit} className='flex gap-2'>
-          <input
+          <textarea
             value={input}
-            onChange={(e) => setInput(e.target.value)}
-            type='text'
-            placeholder='Ask a question...'
-            className='flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm'
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            placeholder='Ask a question... (Shift+Enter for new line)'
+            className='flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none min-h-[40px] max-h-[120px] overflow-y-auto'
             disabled={isLoading}
+            rows={1}
           />
           <button
             type='submit'
-            className='p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50'
+            className='p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 self-end'
             disabled={isLoading || !input.trim()}
           >
             <Send size={16} />
