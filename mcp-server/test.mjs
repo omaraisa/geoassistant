@@ -42,6 +42,28 @@ async function testMCPServer() {
   });
 
   console.log('📤 Response:', result.content[0]);
+  console.log();
+
+  // Test get_districts
+  console.log('🔧 Testing tool: get_districts');
+  const districtsResult = await client.callTool({
+    name: 'get_districts',
+    arguments: {},
+  });
+
+  console.log('📤 Response:', districtsResult.content[0].text.substring(0, 200) + '...');
+  console.log();
+
+  // Test get_communities with filter
+  console.log('🔧 Testing tool: get_communities (YAS ISLAND)');
+  const communitiesResult = await client.callTool({
+    name: 'get_communities',
+    arguments: {
+      district: 'YAS ISLAND',
+    },
+  });
+
+  console.log('📤 Response:', communitiesResult.content[0].text.substring(0, 300) + '...');
   console.log('\n✅ All tests passed!');
 
   await client.close();
