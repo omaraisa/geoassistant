@@ -119,6 +119,39 @@ class ArcGISDataLoader {
   }
 
   /**
+   * Search for text in map service layers
+   */
+  async find(searchText: string, layers: number[]): Promise<any[]> {
+    try {
+      // Build find URL
+      const params = new URLSearchParams({
+        f: 'json',
+        searchText: searchText,
+        contains: 'true',
+        layers: layers.join(','),
+        returnGeometry: 'false'
+      });
+
+      const url = `${this.baseUrl}/find?${params.toString()}`;
+      
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`ArcGIS find failed: ${response.statusText}`);
+      }
+
+      const data = await response.json() as any;
+      if (data.error) {
+        throw new Error(`ArcGIS error: ${data.error.message}`);
+      }
+
+      return data.results || [];
+    } catch (error) {
+      console.error('ArcGIS Find Error:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Get districts
    */
   async getDistricts(where?: string) {

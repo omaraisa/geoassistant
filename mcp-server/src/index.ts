@@ -7,6 +7,7 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { arcgisClient } from './dataLoader.js';
+import { searchGeospatialMetadata } from './discovery/searchTool.js';
 import * as salesQueries from './queries/salesQueries.js';
 import * as rentalQueries from './queries/rentalQueries.js';
 import * as supplyQueries from './queries/supplyQueries.js';
@@ -63,6 +64,20 @@ class RealEstateMCPServer {
                   description: 'A test message',
                 },
               },
+            },
+          },
+          {
+            name: 'search_geospatial_metadata',
+            description: 'Search for entities (districts, projects) in the GIS system. Use this FIRST when user mentions a location.',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                query: {
+                  type: 'string',
+                  description: 'Search text (e.g. "Yas Island", "جزيرة ياس", "Reem")',
+                }
+              },
+              required: ['query'],
             },
           },
           {
@@ -188,6 +203,21 @@ class RealEstateMCPServer {
       const { name, arguments: args } = request.params;
 
       try {
+        if (name === 'search_geospatial_metadata') {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(
+                  await searchGeospatialMetadata(args as any),
+                  null,
+                  2
+                ),
+              },
+            ],
+          };
+        }
+
         if (name === 'test_connection') {
           const message = (args as { message?: string })?.message || 'Hello';
           return {

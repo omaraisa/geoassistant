@@ -54,10 +54,15 @@ export class RealEstateMCPClient {
       throw new Error('MCP client not connected. Call connect() first.');
     }
 
+    console.log(`    [MCP] → Calling server tool: ${name}`);
+    const mcpStartTime = Date.now();
+    
     const result = await this.client.callTool({
       name,
       arguments: args,
     });
+
+    console.log(`    [MCP] ← Server responded (${Date.now() - mcpStartTime}ms)`);
 
     return result;
   }

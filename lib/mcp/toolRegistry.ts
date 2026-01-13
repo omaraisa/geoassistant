@@ -13,28 +13,42 @@ import { FunctionDeclaration, SchemaType } from '@google/generative-ai';
  */
 export const MCP_TOOLS: FunctionDeclaration[] = [
   {
+    name: 'search_geospatial_metadata',
+    description: 'SEARCH FIRST. Finds exact district/project names in the system. Required before querying data if the location name is uncertain or in Arabic.',
+    parameters: {
+      type: SchemaType.OBJECT,
+      properties: {
+        query: {
+          type: SchemaType.STRING,
+          description: 'Name to search (e.g., "Yas", "ياس")',
+        },
+      },
+      required: ['query'],
+    },
+  },
+  {
     name: 'get_total_sales_value',
-    description: 'Get total sales value and transaction volume for a district in a specific year. Use this when user asks about total sales, sales value, sales amount, or revenue. Supports both English and Arabic district names (translate Arabic to English before calling).',
+    description: 'Get total sales value. Requires valid English district name from search_geospatial_metadata.',
     parameters: {
       type: SchemaType.OBJECT,
       properties: {
         district: {
           type: SchemaType.STRING,
-          description: 'District name in English (e.g., "YAS ISLAND", "AL REEM ISLAND", "SAADIYAT ISLAND"). If user provides Arabic name, translate: جزيرة ياس → YAS ISLAND, جزيرة الريم → AL REEM ISLAND, جزيرة السعديات → SAADIYAT ISLAND'
+          description: 'Valid English district name (e.g., "YAS ISLAND")'
         },
         year: {
           type: SchemaType.NUMBER,
-          description: 'Year of transactions (e.g., 2024, 2023)'
+          description: 'Year (e.g., 2024)'
         },
         typology: {
           type: SchemaType.STRING,
-          description: 'Optional: Property type filter',
+          description: 'Property type filter',
           format: 'enum' as const,
           enum: ['Apartment', 'Villa', 'Townhouse', 'Plot']
         },
         layout: {
           type: SchemaType.STRING,
-          description: 'Optional: Bedroom count filter',
+          description: 'Bedroom count filter',
           format: 'enum' as const,
           enum: ['Studio', '1 bed', '2 beds', '3 beds', '4 beds', '5 beds', '6+ beds']
         }
@@ -44,17 +58,17 @@ export const MCP_TOOLS: FunctionDeclaration[] = [
   },
   {
     name: 'get_transaction_count',
-    description: 'Get the number of real estate transactions in a district. Use when user asks about transaction count, number of deals, how many sales, volume of transactions. Arabic: عدد المعاملات, عدد الصفقات',
+    description: 'Get transaction count. Requires valid English district name from search_geospatial_metadata.',
     parameters: {
       type: SchemaType.OBJECT,
       properties: {
         district: {
           type: SchemaType.STRING,
-          description: 'District name in English (translate from Arabic if needed)'
+          description: 'Valid English district name'
         },
         year: {
           type: SchemaType.NUMBER,
-          description: 'Year of transactions'
+          description: 'Year'
         }
       },
       required: ['district', 'year']
@@ -62,21 +76,21 @@ export const MCP_TOOLS: FunctionDeclaration[] = [
   },
   {
     name: 'compare_sales_between_districts',
-    description: 'Compare sales data between two districts. Use when user asks to compare, contrast, or see differences between two locations. Arabic: قارن, مقارنة',
+    description: 'Compare sales between two districts.',
     parameters: {
       type: SchemaType.OBJECT,
       properties: {
         district1: {
           type: SchemaType.STRING,
-          description: 'First district name in English'
+          description: 'First district Name'
         },
         district2: {
           type: SchemaType.STRING,
-          description: 'Second district name in English'
+          description: 'Second district Name'
         },
         year: {
           type: SchemaType.NUMBER,
-          description: 'Year for comparison (optional, defaults to latest available)'
+          description: 'Year'
         }
       },
       required: ['district1', 'district2']
@@ -84,17 +98,17 @@ export const MCP_TOOLS: FunctionDeclaration[] = [
   },
   {
     name: 'find_units_by_budget',
-    description: 'Find rental units within a specific budget and bedroom count. Use when user asks about rentals, rent, finding units, apartments for rent within budget. Arabic: إيجار, وحدات للإيجار',
+    description: 'Find rentals by budget.',
     parameters: {
       type: SchemaType.OBJECT,
       properties: {
         budget: {
           type: SchemaType.NUMBER,
-          description: 'Maximum annual budget in AED (e.g., 100000 for 100k)'
+          description: 'Max budget AED'
         },
         layout: {
           type: SchemaType.STRING,
-          description: 'Bedroom count',
+          description: 'Layout',
           format: 'enum' as const,
           enum: ['Studio', '1 bed', '2 beds', '3 beds', '4 beds', '5+ beds']
         },
