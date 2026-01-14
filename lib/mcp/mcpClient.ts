@@ -6,6 +6,7 @@
 import { Client } from '@modelcontextprotocol/sdk/client';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { spawn, ChildProcess } from 'child_process';
+import path from 'path';
 
 export class RealEstateMCPClient {
   private client: Client | null = null;
@@ -32,8 +33,8 @@ export class RealEstateMCPClient {
     );
 
     // Create transport
-    // Use absolute path to ensure correct location
-    const mcpServerPath = require('path').resolve(process.cwd(), 'mcp-server', 'dist', 'index.js');
+    // Use absolute path to ensure correct location (resolved at runtime, not build time)
+    const mcpServerPath = path.resolve(process.cwd(), 'mcp-server', 'dist', 'index.js');
     console.log('[MCP Client] MCP server path:', mcpServerPath);
     
     this.transport = new StdioClientTransport({

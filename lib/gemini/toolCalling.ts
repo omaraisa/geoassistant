@@ -8,7 +8,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getToolsForGemini } from '@/lib/mcp/toolRegistry';
 import { executeQuery } from '@/lib/mcp/mcpClient';
-import { selectToolsForMessage } from '@/lib/tool-rag/retriever';
+// import { selectToolsForMessage } from '@/lib/tool-rag/retriever'; // DISABLED FOR BUILD TESTING
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY!);
 
@@ -54,25 +54,15 @@ export async function askGeminiWithTools(
       systemInstruction: SYSTEM_INSTRUCTION,
     });
 
-    const toolRagDebug = process.env.TOOL_RAG_DEBUG === '1' || process.env.TOOL_RAG_DEBUG === 'true';
+    // === TOOL-RAG DISABLED FOR BUILD TESTING ===
+    // Use all tools (no selection) to bypass Tool-RAG system entirely
+    console.log(`[${requestId}] Tool-RAG DISABLED - using all tools`);
 
-    const selection = selectToolsForMessage(userMessage, {
-      topK: Number(process.env.TOOL_RAG_TOP_K ?? 12),
-      fallbackK: Number(process.env.TOOL_RAG_FALLBACK_K ?? 20),
-      debug: toolRagDebug,
-    });
-
-    // Fail-open: if the selector errored and returned no tools, expose all tools.
-    const selectedToolNames = selection.selectedToolNames?.length ? selection.selectedToolNames : undefined;
-
-    // Get tools in Gemini-compatible format
-    const geminiTools = getToolsForGemini(selectedToolNames);
+    // Get tools in Gemini-compatible format (all tools)
+    const geminiTools = getToolsForGemini();
 
     console.log(`[${requestId}] Available tools: ${geminiTools.length}`);
     console.log(`[${requestId}] Tools: ${geminiTools.map(t => t.name).join(', ')}\n`);
-    if (toolRagDebug && selection.debug) {
-      console.log(`[${requestId}] [Tool-RAG] reason=${selection.debug.reason}`);
-    }
 
     // Build conversation history
     const contents = [

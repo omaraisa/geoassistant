@@ -57,18 +57,26 @@ function toGeminiSchema(schema: ToolGeminiParameterSchema): any {
   return out;
 }
 
-export const MCP_TOOLS: FunctionDeclaration[] = getAllToolDocs().map((doc) => ({
-  name: doc.name,
-  description: doc.description,
-  parameters: toGeminiSchema(doc.gemini.parameters),
-}));
+export let MCP_TOOLS: FunctionDeclaration[] | null = null;
+
+function initializeTools(): FunctionDeclaration[] {
+  if (!MCP_TOOLS) {
+    MCP_TOOLS = getAllToolDocs().map((doc) => ({
+      name: doc.name,
+      description: doc.description,
+      parameters: toGeminiSchema(doc.gemini.parameters),
+    }));
+  }
+  return MCP_TOOLS;
+}
 
 /**
  * Get tools formatted for Gemini's function calling
  */
 export function getToolsForGemini(toolNames?: string[]) {
+  const tools = initializeTools();
   const set = toolNames && toolNames.length ? new Set(toolNames) : null;
-  return MCP_TOOLS
+  return tools
     .filter((tool) => (set ? set.has(tool.name) : true))
     .map((tool) => ({
       name: tool.name,
