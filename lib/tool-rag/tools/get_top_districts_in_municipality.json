@@ -1,0 +1,51 @@
+{
+  "name": "get_top_districts_in_municipality",
+  "category": "municipality",
+  "description": "Returns top districts ranked by sales value within a municipality.",
+  "whenToUse": [
+    "User asks about top/best districts within a municipality for a year.",
+    "Arabic: أفضل المناطق, أعلى المبيعات, أكثر المناطق مبيعاً"
+  ],
+  "keywords": [
+    "top",
+    "best",
+    "rank",
+    "highest",
+    "أفضل",
+    "الأعلى",
+    "ترتيب",
+    "أكثر"
+  ],
+  "examples": [
+    {
+      "user": "Show me the top 5 districts by sales in Abu Dhabi City for 2023",
+      "notes": "Call get_top_districts_in_municipality(municipality, year, limit=5)."
+    },
+    {
+      "user": "اعرض أفضل 5 مناطق من حيث المبيعات في أبو ظبي لعام 2023",
+      "notes": "Call get_top_districts_in_municipality(municipality='Abu Dhabi City', year=2023, limit=5)."
+    }
+  ],
+  "gemini": {
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "municipality": {
+          "type": "string",
+          "description": "Municipality name",
+          "enum": ["Abu Dhabi City", "Al Ain City", "Al Dhafra Region"]
+        },
+        "year": {
+          "type": "number",
+          "description": "Year"
+        },
+        "limit": {
+          "type": "number",
+          "description": "Number of top districts to return (default 5)"
+        }
+      },
+      "required": ["municipality", "year"],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "find_units_by_budget",
+  "category": "rental",
+  "description": "Finds rental units by budget and layout (bedrooms).",
+  "whenToUse": [
+    "User asks about rentals, rent budget, or finding units within a price range.",
+    "Arabic: إيجار, استئجار, ميزانية, ضمن" 
+  ],
+  "keywords": [
+    "rent",
+    "rental",
+    "lease",
+    "budget",
+    "aed",
+    "إيجار",
+    "استئجار",
+    "ميزانية",
+    "سعر"
+  ],
+  "examples": [
+    {
+      "user": "Find me a 2-bedroom apartment to rent for 120,000 AED a year",
+      "notes": "Call find_units_by_budget(budget=120000, layout='2 beds')."
+    },
+    {
+      "user": "ابحث عن شقة غرفتين للإيجار بميزانية 120000",
+      "notes": "Call find_units_by_budget with budget and layout."
+    }
+  ],
+  "gemini": {
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "budget": {
+          "type": "number",
+          "description": "Max budget AED"
+        },
+        "layout": {
+          "type": "string",
+          "description": "Layout",
+          "enum": ["Studio", "1 bed", "2 beds", "3 beds", "4 beds", "5+ beds"]
+        },
+        "year": {
+          "type": "number",
+          "description": "Optional year"
+        }
+      },
+      "required": ["budget", "layout"],
+      "additionalProperties": false
+    }
+  }
+}

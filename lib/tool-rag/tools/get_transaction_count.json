@@ -1,0 +1,46 @@
+{
+  "name": "get_transaction_count",
+  "category": "sales",
+  "description": "Counts sales transactions for a district and year. Requires valid English district name.",
+  "whenToUse": [
+    "User asks: how many transactions/كم عدد المعاملات.",
+    "User asks about number of deals/sales contracts in a place for a year."
+  ],
+  "keywords": [
+    "transactions",
+    "transaction count",
+    "how many",
+    "count",
+    "عدد",
+    "كم",
+    "معاملات",
+    "صفقات"
+  ],
+  "examples": [
+    {
+      "user": "كم عدد المعاملات في جزيرة ياس في العام 2023؟",
+      "notes": "Search 'جزيرة ياس' first, then call get_transaction_count(district='YAS ISLAND', year=2023)."
+    },
+    {
+      "user": "How many transactions in Al Reem Island in 2024?",
+      "notes": "Search 'Al Reem' first to confirm exact district name."
+    }
+  ],
+  "gemini": {
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "district": {
+          "type": "string",
+          "description": "Valid English district name"
+        },
+        "year": {
+          "type": "number",
+          "description": "Year"
+        }
+      },
+      "required": ["district", "year"],
+      "additionalProperties": false
+    }
+  }
+}

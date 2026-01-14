@@ -1,0 +1,33 @@
+{
+  "name": "get_districts",
+  "category": "geo",
+  "description": "Lists all districts in Abu Dhabi.",
+  "whenToUse": [
+    "User asks: list all districts / what districts exist.",
+    "Arabic: ما هي المناطق؟ اعرض المناطق"
+  ],
+  "keywords": [
+    "list districts",
+    "districts",
+    "what districts",
+    "المناطق",
+    "اعرض",
+    "قائمة"
+  ],
+  "examples": [
+    {
+      "user": "What districts are there in Abu Dhabi?"
+    },
+    {
+      "user": "ما هي المناطق الموجودة في أبو ظبي؟"
+    }
+  ],
+  "gemini": {
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  }
+}

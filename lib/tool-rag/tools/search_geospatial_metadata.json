@@ -1,0 +1,49 @@
+{
+  "name": "search_geospatial_metadata",
+  "category": "geo",
+  "description": "SEARCH FIRST. Finds exact district/project/community names and returns valid English names.",
+  "whenToUse": [
+    "If the user mentions ANY location name (Arabic or English).",
+    "Use before any district/project/community data query to avoid guessing names.",
+    "Examples: Yas/جزيرة ياس, Reem/الريم, Saadiyat/السعديات"
+  ],
+  "keywords": [
+    "search",
+    "find",
+    "lookup",
+    "district",
+    "project",
+    "community",
+    "location",
+    "اسم",
+    "بحث",
+    "ابحث",
+    "منطقة",
+    "جزيرة",
+    "مجتمع",
+    "مشروع"
+  ],
+  "examples": [
+    {
+      "user": "كم عدد المعاملات في جزيرة ياس في 2023؟",
+      "notes": "First call search_geospatial_metadata(query='جزيرة ياس') to get 'YAS ISLAND'."
+    },
+    {
+      "user": "Sales in Yas Island 2024",
+      "notes": "First call search_geospatial_metadata(query='Yas Island') to confirm exact name."
+    }
+  ],
+  "gemini": {
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Name to search (e.g., 'Yas', 'جزيرة ياس')"
+        }
+      },
+      "required": ["query"],
+      "additionalProperties": false
+    }
+  }
+}

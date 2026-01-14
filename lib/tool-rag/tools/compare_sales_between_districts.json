@@ -1,0 +1,50 @@
+{
+  "name": "compare_sales_between_districts",
+  "category": "sales",
+  "description": "Compares sales between two districts (value/count depending on server implementation).",
+  "whenToUse": [
+    "User asks to compare two districts: compare, vs, versus, قارن, مقارنة.",
+    "User asks which district performed better in a given year."
+  ],
+  "keywords": [
+    "compare",
+    "comparison",
+    "vs",
+    "versus",
+    "contrast",
+    "قارن",
+    "مقارنة",
+    "فرق"
+  ],
+  "examples": [
+    {
+      "user": "Compare sales between Saadiyat Island and Yas Island in 2024",
+      "notes": "Search both names first if uncertain, then call compare_sales_between_districts(district1, district2, year)."
+    },
+    {
+      "user": "قارن المبيعات بين جزيرة السعديات و جزيرة ياس في 2024",
+      "notes": "Search both Arabic names to get exact English district names."
+    }
+  ],
+  "gemini": {
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "district1": {
+          "type": "string",
+          "description": "First district name"
+        },
+        "district2": {
+          "type": "string",
+          "description": "Second district name"
+        },
+        "year": {
+          "type": "number",
+          "description": "Year"
+        }
+      },
+      "required": ["district1", "district2"],
+      "additionalProperties": false
+    }
+  }
+}

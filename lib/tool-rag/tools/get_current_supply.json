@@ -1,0 +1,50 @@
+{
+  "name": "get_current_supply",
+  "category": "supply",
+  "description": "Gets available housing supply (inventory) for a district and year.",
+  "whenToUse": [
+    "User asks about supply, availability, inventory, units available.",
+    "Arabic: العرض, المتاح, الوحدات المتاحة"
+  ],
+  "keywords": [
+    "supply",
+    "availability",
+    "inventory",
+    "units available",
+    "العرض",
+    "المتاح",
+    "وحدات",
+    "الوحدات المتاحة"
+  ],
+  "examples": [
+    {
+      "user": "What is the current housing supply in Khalifa City for 3-bedroom villas in 2024?",
+      "notes": "Search location first, then call get_current_supply(district, year, layout)."
+    },
+    {
+      "user": "كم عدد الوحدات المتاحة في خليفة سيتي في 2024؟",
+      "notes": "Search 'خليفة سيتي' first to get the exact English name."
+    }
+  ],
+  "gemini": {
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "district": {
+          "type": "string",
+          "description": "District name in English"
+        },
+        "year": {
+          "type": "number",
+          "description": "Year"
+        },
+        "layout": {
+          "type": "string",
+          "description": "Optional: Filter by bedroom count"
+        }
+      },
+      "required": ["district", "year"],
+      "additionalProperties": false
+    }
+  }
+}

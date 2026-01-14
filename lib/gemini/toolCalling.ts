@@ -5,9 +5,10 @@
  * This replaces the NLU parser with Gemini's language understanding.
  */
 
-import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getToolsForGemini } from '@/lib/mcp/toolRegistry';
 import { executeQuery } from '@/lib/mcp/mcpClient';
+import { selectToolsForMessage } from '@/lib/tool-rag/retriever';
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY!);
 
@@ -53,11 +54,25 @@ export async function askGeminiWithTools(
       systemInstruction: SYSTEM_INSTRUCTION,
     });
 
+    const toolRagDebug = process.env.TOOL_RAG_DEBUG === '1' || process.env.TOOL_RAG_DEBUG === 'true';
+
+    const selection = selectToolsForMessage(userMessage, {
+      topK: Number(process.env.TOOL_RAG_TOP_K ?? 12),
+      fallbackK: Number(process.env.TOOL_RAG_FALLBACK_K ?? 20),
+      debug: toolRagDebug,
+    });
+
+    // Fail-open: if the selector errored and returned no tools, expose all tools.
+    const selectedToolNames = selection.selectedToolNames?.length ? selection.selectedToolNames : undefined;
+
     // Get tools in Gemini-compatible format
-    const geminiTools = getToolsForGemini();
+    const geminiTools = getToolsForGemini(selectedToolNames);
 
     console.log(`[${requestId}] Available tools: ${geminiTools.length}`);
     console.log(`[${requestId}] Tools: ${geminiTools.map(t => t.name).join(', ')}\n`);
+    if (toolRagDebug && selection.debug) {
+      console.log(`[${requestId}] [Tool-RAG] reason=${selection.debug.reason}`);
+    }
 
     // Build conversation history
     const contents = [

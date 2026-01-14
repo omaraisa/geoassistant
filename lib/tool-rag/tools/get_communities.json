@@ -1,0 +1,39 @@
+{
+  "name": "get_communities",
+  "category": "geo",
+  "description": "Lists communities within a district (or all communities if district not provided).",
+  "whenToUse": [
+    "User asks about communities/neighborhoods inside a district.",
+    "Arabic: المجتمعات, الأحياء"
+  ],
+  "keywords": [
+    "communities",
+    "community",
+    "neighborhoods",
+    "الأحياء",
+    "المجتمعات"
+  ],
+  "examples": [
+    {
+      "user": "List all the communities in Al Falah",
+      "notes": "Search location first if needed, then call get_communities(district='AL FALAH')."
+    },
+    {
+      "user": "اعرض المجتمعات في الفلاح",
+      "notes": "Search Arabic name first to get English district name."
+    }
+  ],
+  "gemini": {
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "district": {
+          "type": "string",
+          "description": "District name in English (optional)"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  }
+}

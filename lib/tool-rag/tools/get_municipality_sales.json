@@ -1,0 +1,48 @@
+{
+  "name": "get_municipality_sales",
+  "category": "municipality",
+  "description": "Gets total sales data for an entire municipality (aggregates all districts).",
+  "whenToUse": [
+    "User asks about a municipality as a whole: Abu Dhabi City, Al Ain City, Al Dhafra Region.",
+    "Arabic: أبو ظبي, العين, الظفرة"
+  ],
+  "keywords": [
+    "municipality",
+    "abu dhabi city",
+    "al ain",
+    "al dhafra",
+    "أبو ظبي",
+    "ابوظبي",
+    "العين",
+    "الظفرة",
+    "المنطقة الغربية"
+  ],
+  "examples": [
+    {
+      "user": "Show me the total sales in Abu Dhabi City in 2023",
+      "notes": "Call get_municipality_sales(municipality='Abu Dhabi City', year=2023)."
+    },
+    {
+      "user": "ما هي إجمالي المبيعات في أبو ظبي في 2023؟",
+      "notes": "Call get_municipality_sales(municipality='Abu Dhabi City', year=2023)."
+    }
+  ],
+  "gemini": {
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "municipality": {
+          "type": "string",
+          "description": "Municipality name",
+          "enum": ["Abu Dhabi City", "Al Ain City", "Al Dhafra Region"]
+        },
+        "year": {
+          "type": "number",
+          "description": "Optional year"
+        }
+      },
+      "required": ["municipality"],
+      "additionalProperties": false
+    }
+  }
+}

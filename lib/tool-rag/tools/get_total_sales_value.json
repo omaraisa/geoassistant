@@ -1,0 +1,56 @@
+{
+  "name": "get_total_sales_value",
+  "category": "sales",
+  "description": "Gets total sales value for a district and year. Requires valid English district name.",
+  "whenToUse": [
+    "User asks about total sales value/amount/قيمة المبيعات.",
+    "User asks: إجمالي قيمة المبيعات في [مكان] لعام [سنة]."
+  ],
+  "keywords": [
+    "sales value",
+    "total sales",
+    "value",
+    "amount",
+    "revenue",
+    "قيمة",
+    "إجمالي",
+    "المبيعات"
+  ],
+  "examples": [
+    {
+      "user": "What was the total sales value in Yas Island in 2023?",
+      "notes": "Search location first, then call get_total_sales_value(district, year)."
+    },
+    {
+      "user": "ما هي إجمالي قيمة المبيعات في جزيرة ياس في 2023؟",
+      "notes": "Search 'جزيرة ياس' first to get 'YAS ISLAND'."
+    }
+  ],
+  "gemini": {
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "district": {
+          "type": "string",
+          "description": "Valid English district name (e.g., 'YAS ISLAND')"
+        },
+        "year": {
+          "type": "number",
+          "description": "Year (e.g., 2023)"
+        },
+        "typology": {
+          "type": "string",
+          "description": "Optional property type filter",
+          "enum": ["Apartment", "Villa", "Townhouse", "Plot"]
+        },
+        "layout": {
+          "type": "string",
+          "description": "Optional bedroom count filter",
+          "enum": ["Studio", "1 bed", "2 beds", "3 beds", "4 beds", "5 beds", "6+ beds"]
+        }
+      },
+      "required": ["district", "year"],
+      "additionalProperties": false
+    }
+  }
+}
