@@ -1,8 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Empty turbopack config to silence the error
-  turbopack: {},
+  // turbopack disabled - use webpack for ArcGIS compatibility
 };
 
 export default nextConfig;
