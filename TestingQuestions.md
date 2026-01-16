@@ -27,13 +27,6 @@ This file contains test questions to showcase the key features of the Real Estat
 ### 🔹 Comparative
 *No supply comparison tools currently available*
 
-## 🎯 Additional Supported Queries
-
-### Location & Metadata
-- What districts are in Abu Dhabi City? → `get_districts`
-- Tell me about Yas Island → `search_geospatial_metadata`
-- جزيرة ياس معلومات → `search_geospatial_metadata`
-
 ### Advanced Analysis
 - Show me top 5 districts by sales in Abu Dhabi City for 2023 → `get_top_districts_in_municipality`
 - Find properties in Yas Island for budget 300,000 AED → `find_units_by_budget`
@@ -53,49 +46,3 @@ This file contains test questions to showcase the key features of the Real Estat
 - وكم في جزيرة الريم؟ → `get_transaction_count`
 
 ---
-
-## 🎬 Demo Script (8-10 minutes)
-
-**Opening - Chart Visualization:**
-1. *"Compare sales between Yas Island and AL REEM ISLAND in 2024"* → Auto-opens chart
-2. *"Show me top 5 districts in Abu Dhabi City for 2023"* → Another chart
-
-**Context Awareness Demo:**
-3. *"How many transactions occurred in Yas Island in 2024?"*
-4. *"What about AL REEM ISLAND?"* (AI remembers context)
-5. *"Compare their sales in 2024"* (AI remembers both locations)
-
-**Multilingual Demo:**
-6. *"كم عدد المعاملات في جزيرة ياس في العام 2024؟"*
-7. *"قارن مع جزيرة السعديات"*
-
-**Budget Search:**
-8. *"Find 2-bedroom apartments in Yas Island under 150,000 AED per year"*
-9. *"ابحث عن شقة 3 غرف نوم بميزانية 100,000 درهم"* (Arabic budget search)
-
-**Supply Information:**
-9. *"What is the current housing supply in Yas Island?"*
-
----
-
-## 🛠️ Current Tool Capabilities
-
-**Available Tools:** 10
-- `search_geospatial_metadata` - Location validation and info
-- `get_total_sales_value` - Sales value by district/year
-- `get_transaction_count` - Transaction volume by district/year
-- `compare_sales_between_districts` - Compare two districts
-- `find_units_by_budget` - Budget-based rental search
-- `get_current_supply` - Current housing supply
-- `get_municipality_sales` - Municipality-level sales
-- `get_top_districts_in_municipality` - Top districts by sales
-- `get_districts` - List districts in municipality
-- `get_communities` - List communities
-
-**Total Answerable Questions:** ~8-10 from the original list
-
----
-
-*Last updated: January 17, 2026*
-*Demo Focus: Chart Auto-Display, Context Awareness, Multilingual Support*</content>
-<parameter name="filePath">d:\sandbox\Real States Smart Assistant\geo_assistant\TestingQuestions.md
