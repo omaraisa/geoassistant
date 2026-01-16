@@ -1,14 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { askGeminiWithTools } from '@/lib/gemini/toolCalling';
+import { askGeminiWithTools, type ConversationTurn } from '@/lib/gemini/toolCalling';
 
 export async function POST(request: NextRequest) {
   try {
-    const { message } = await request.json();
+    const { message, history = [] } = await request.json();
 
     console.log('[Chat API] Received message:', message);
+    console.log('[Chat API] History length:', history.length);
 
-    // Use Gemini's native tool calling instead of NLU pre-execution
-    const response = await askGeminiWithTools(message);
+    // Convert client history to Gemini format
+    const geminiHistory: ConversationTurn[] = history.map((msg: any) => ({
+      role: msg.role === 'user' ? 'user' as const : 'model' as const,
+      parts: [{ text: msg.content }]
+    }));
+
+    // Use Gemini's native tool calling with conversation history
+    const response = await askGeminiWithTools(message, geminiHistory);
 
     console.log('[Chat API] Response generated, length:', response.length);
 

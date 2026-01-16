@@ -54,12 +54,18 @@ export default function Sidebar() {
     scrollToBottom();
 
     try {
+      // Send only last 7 messages for context (saves tokens)
+      const recentHistory = messages.slice(-7);
+      
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: userMessage.content }),
+        body: JSON.stringify({ 
+          message: userMessage.content,
+          history: recentHistory
+        }),
       });
 
       const data = await response.json();
