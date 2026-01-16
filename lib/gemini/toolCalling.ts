@@ -36,13 +36,17 @@ CRITICAL DISCOVERY WORKFLOW:
 
 /**
  * Ask Gemini with tool calling capability
+ * @param userMessage - The user's current message
+ * @param history - Conversation history in Gemini format
+ * @returns Response text and optional chart data
  */
 export async function askGeminiWithTools(
   userMessage: string,
   conversationHistory: Array<{ role: string; parts: any[] }> = []
-): Promise<string> {
+): Promise<{ response: string; chartData?: any }> {
   const requestId = Date.now();
   let geminiCallCount = 0;
+  let detectedChartData: any = null;
   
   try {
     console.log(`\n${'='.repeat(80)}`);
@@ -103,7 +107,7 @@ export async function askGeminiWithTools(
         console.log(`[${requestId}] ⚪ No tool calls needed, direct response`);
         console.log(`[${requestId}] TOTAL GEMINI API CALLS: ${geminiCallCount}`);
         console.log(`${'='.repeat(80)}\n`);
-        return directResponse;
+        return { response: directResponse, chartData: detectedChartData };
       }
 
       // We have tools to execute
@@ -126,6 +130,29 @@ export async function askGeminiWithTools(
           
           const resultLength = typeof toolResult === 'string' ? toolResult.length : JSON.stringify(toolResult).length;
           console.log(`[${requestId}]   ✅ Tool result: ${resultLength} chars (${Date.now() - toolStartTime}ms)`);
+
+          // Detect comparison/chart-worthy tools and format data
+          const args = toolArgs as any;
+          if (toolName === 'compare_sales_between_districts' && Array.isArray(toolResult)) {
+            detectedChartData = {
+              title: `Sales Comparison: ${args.district1} vs ${args.district2} (${args.year})`,
+              data: toolResult.map((item: any) => ({
+                name: item.district || item.name,
+                value: item.total_sales_value || item.value || 0
+              }))
+            };
+            console.log(`[${requestId}]   📊 Chart data detected for ${toolName}`);
+          } else if (toolName === 'get_top_districts_in_municipality' && Array.isArray(toolResult)) {
+            const limit = args.limit || 10;
+            detectedChartData = {
+              title: `Top Districts in ${args.municipality} (${args.year})`,
+              data: (toolResult as any[]).slice(0, limit).map((item: any) => ({
+                name: item.district || item.name,
+                value: item.total_sales || item.value || 0
+              }))
+            };
+            console.log(`[${requestId}]   📊 Chart data detected for ${toolName}`);
+          }
 
           functionResponses.push({
             functionResponse: {
@@ -159,7 +186,10 @@ export async function askGeminiWithTools(
 
     // If we get here, we exceeded max loops
     console.error(`[${requestId}] ⚠️ Max tool loops (${MAX_TOOL_LOOPS}) exceeded.`);
-    return "I'm having trouble processing your request (too many steps). Please try a simpler question.";
+    return { 
+      response: "I'm having trouble processing your request (too many steps). Please try a simpler question.",
+      chartData: detectedChartData 
+    };
 
   } catch (error: any) {
     console.error(`[${requestId}] ❌ GEMINI ERROR after ${geminiCallCount} API calls:`, error.message);
@@ -179,8 +209,8 @@ export interface ConversationTurn {
 export async function continueConversation(
   userMessage: string,
   history: ConversationTurn[]
-): Promise<{ response: string; newHistory: ConversationTurn[] }> {
-  const response = await askGeminiWithTools(userMessage, history);
+): Promise<{ response: string; newHistory: ConversationTurn[]; chartData?: any }> {
+  const result = await askGeminiWithTools(userMessage, history);
   
   const newHistory = [
     ...history,
@@ -190,9 +220,9 @@ export async function continueConversation(
     },
     {
       role: 'model' as const,
-      parts: [{ text: response }]
+      parts: [{ text: result.response }]
     }
   ];
 
-  return { response, newHistory };
+  return { response: result.response, newHistory, chartData: result.chartData };
 }

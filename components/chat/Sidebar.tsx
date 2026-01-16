@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useAppContext } from '@/components/AppContext';
 
 interface Message {
   id: string;
@@ -11,6 +12,7 @@ interface Message {
 }
 
 export default function Sidebar() {
+  const { setChartData, setBottomPanelOpen } = useAppContext();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -77,6 +79,13 @@ export default function Sidebar() {
           content: data.response,
         };
         setMessages(prev => [...prev, aiMessage]);
+        
+        // Handle chart data if present
+        if (data.chartData) {
+          console.log('[Sidebar] Chart data received:', data.chartData);
+          setChartData(data.chartData);
+          setBottomPanelOpen(true);
+        }
       } else if (data.error) {
         const errorMessage: Message = {
           id: (Date.now() + 1).toString(),

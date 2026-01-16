@@ -15,11 +15,17 @@ export async function POST(request: NextRequest) {
     }));
 
     // Use Gemini's native tool calling with conversation history
-    const response = await askGeminiWithTools(message, geminiHistory);
+    const result = await askGeminiWithTools(message, geminiHistory);
 
-    console.log('[Chat API] Response generated, length:', response.length);
+    console.log('[Chat API] Response generated, length:', result.response.length);
+    if (result.chartData) {
+      console.log('[Chat API] Chart data available:', result.chartData.title);
+    }
 
-    return NextResponse.json({ response });
+    return NextResponse.json({ 
+      response: result.response,
+      chartData: result.chartData 
+    });
   } catch (error: any) {
     console.error('[Chat API] Error:', error);
     return NextResponse.json(
