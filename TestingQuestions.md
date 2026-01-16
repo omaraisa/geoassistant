@@ -1,21 +1,19 @@
 # 🏠 Real Estate AI Assistant - Demo Questions
 
-This file contains test questions to showcase the key features of the Real Estate AI Assistant, organized by data type and question type. **Only questions we can currently answer with our tools are included.**
+This file contains test questions to showcase the key features of the Real Estate AI Assistant, organized by data type and question type. 
 
 ## 📊 Sales Data Questions
 
 ### 🔹 Descriptive (What happened?)
 - How many transactions occurred in Yas Island in 2024? → `get_transaction_count`
-- Which projects had the highest number of sales this year? → `get_top_districts_in_municipality`
 
 ### 🔹 Comparative (Where is it higher/lower?)
 - Compare sale prices between Yas Island and AL REEM ISLAND → `compare_sales_between_districts`
-- Which district has higher sales volume: AL REEM ISLAND or Yas? → `compare_sales_between_districts`
 
 ## 🏠 Rental Data Questions
 
 ### 🔹 Descriptive
-- With a budget of AED 100,000, which communities can I find a 3BR apartment in? → `find_units_by_budget`
+- Find me a 3BR appartment with a budget of AED 100,000 → `find_units_by_budget`
 
 ### 🔹 Comparative
 *No rental comparison tools currently available*
@@ -46,6 +44,7 @@ This file contains test questions to showcase the key features of the Real Estat
 - كم عدد المعاملات في جزيرة ياس في العام 2024؟ → `get_transaction_count`
 - قارن المبيعات بين جزيرة ياس وجزيرة الريم في العام 2024 → `compare_sales_between_districts`
 - اعرض أفضل 5 مناطق من حيث المبيعات في أبو ظبي لعام 2023 → `get_top_districts_in_municipality`
+- ابحث عن شقة 3 غرف نوم بميزانية 100,000 درهم → `find_units_by_budget`
 
 ### Mixed Language Conversations
 - Tell me about Yas Island
@@ -72,6 +71,7 @@ This file contains test questions to showcase the key features of the Real Estat
 
 **Budget Search:**
 8. *"Find 2-bedroom apartments in Yas Island under 150,000 AED per year"*
+9. *"ابحث عن شقة 3 غرف نوم بميزانية 100,000 درهم"* (Arabic budget search)
 
 **Supply Information:**
 9. *"What is the current housing supply in Yas Island?"*
