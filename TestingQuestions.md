@@ -40,6 +40,19 @@ This file contains test questions to showcase the key features of the Real Estat
 - Show me top 5 districts by sales in Abu Dhabi City for 2023 → `get_top_districts_in_municipality`
 - Find properties in Yas Island for budget 300,000 AED → `find_units_by_budget`
 
+## 🌍 Multilingual Support
+
+### Arabic Queries
+- كم عدد المعاملات في جزيرة ياس في العام 2024؟ → `get_transaction_count`
+- قارن المبيعات بين جزيرة ياس وجزيرة الريم في العام 2024 → `compare_sales_between_districts`
+- اعرض أفضل 5 مناطق من حيث المبيعات في أبو ظبي لعام 2023 → `get_top_districts_in_municipality`
+
+### Mixed Language Conversations
+- Tell me about Yas Island
+- كم عدد المعاملات هناك؟ → `get_transaction_count`
+- Compare with AL REEM ISLAND
+- وكم في جزيرة الريم؟ → `get_transaction_count`
+
 ---
 
 ## 🎬 Demo Script (8-10 minutes)
