@@ -1,128 +1,88 @@
 # 🏠 Real Estate AI Assistant - Demo Questions
 
-This file contains test questions to showcase the key features of the Real Estate AI Assistant.
+This file contains test questions to showcase the key features of the Real Estate AI Assistant, organized by data type and question type. **Only questions we can currently answer with our tools are included.**
 
-## 📊 Chart Visualization Features
+## 📊 Sales Data Questions
 
-### Sales Comparisons (Auto-opens chart panel)
-- Compare sales between Yas Island and Saadiyat Island in 2024
-- قارن المبيعات بين جزيرة ياس وجزيرة السعديات في العام 2024
-- Compare sales between Yas Island and AL REEM ISLAND in 2024
-- Show me top 5 districts by sales in Abu Dhabi City for 2023
-- اعرض أفضل 5 مناطق من حيث المبيعات في أبو ظبي لعام 2023
+### 🔹 Descriptive (What happened?)
+- How many transactions occurred in Yas Island in 2024? → `get_transaction_count`
+- Which projects had the highest number of sales this year? → `get_top_districts_in_municipality`
 
-### Transaction Analysis
-- How many transactions were there in Yas Island in 2024?
-- كم عدد المعاملات في جزيرة ياس في العام 2024؟
-- What was the total sales value in Saadiyat Island in 2023?
+### 🔹 Comparative (Where is it higher/lower?)
+- Compare sale prices between Yas Island and AL REEM ISLAND → `compare_sales_between_districts`
+- Which district has higher sales volume: AL REEM ISLAND or Yas? → `compare_sales_between_districts`
 
-## 💬 Context Awareness (Chat History)
+## 🏠 Rental Data Questions
 
-### Follow-up Questions (AI remembers previous context)
-1. How many units are available in Yas Island?
-2. What about Saadiyat Island? (AI remembers we're talking about units)
-3. Compare their sales in 2024 (AI remembers both locations)
+### 🔹 Descriptive
+- With a budget of AED 100,000, which communities can I find a 3BR apartment in? → `find_units_by_budget`
 
-### Multi-turn Conversations
-1. Tell me about Yas Island
-2. How does it compare to Saadiyat Island?
-3. Show me the top districts in Abu Dhabi City
-4. Which one has more transactions?
+### 🔹 Comparative
+*No rental comparison tools currently available*
 
-## 🏢 Real Estate Data Queries
+## 📦 Supply Data Questions
 
-### Location Search & Metadata
-- What districts are in Abu Dhabi City?
-- Tell me about Yas Island
-- جزيرة ياس معلومات
+### 🔹 Descriptive
+- What is the current housing supply by community? → `get_current_supply`
+- What is the total number of 2BR units in YN7 for 2024? → `get_current_supply`
 
-### Supply & Demand
-- How many rental units are available in Yas Island?
-- What are the current supply levels in Saadiyat Island?
-- Find units in Yas Island with budget of 200,000 AED
+### 🔹 Comparative
+*No supply comparison tools currently available*
 
-### Rental Information
-- What are the average rental prices in Yas Island?
-- Find 2-bedroom apartments in Saadiyat Island under 150,000 AED per year
+## 🎯 Additional Supported Queries
 
-## 🌍 Multilingual Support
+### Location & Metadata
+- What districts are in Abu Dhabi City? → `get_districts`
+- Tell me about Yas Island → `search_geospatial_metadata`
+- جزيرة ياس معلومات → `search_geospatial_metadata`
 
-### Arabic Queries
-- كم عدد الوحدات المتاحة في جزيرة ياس؟
-- أريد شقق في جزيرة السعديات
-- قارن بين جزيرة ياس وجزيرة السعديات
-
-### Mixed Language Conversations
-- Tell me about Yas Island
-- كم عدد المعاملات هناك؟
-- Compare with Saadiyat Island
-- وكم في جزيرة السعديات؟
-
-## 🎯 Advanced Features
-
-### Budget-based Search
-- Find properties in Yas Island for budget 300,000 AED
-- Show me 3-bedroom villas in Saadiyat Island under 500,000 AED
-
-### Municipality Analysis
-- What are the top districts in Dubai for sales in 2023?
-- Show me sales data for Abu Dhabi City
-
-### Complex Comparisons
-- Compare transaction volumes between Yas Island and Saadiyat Island for 2024
-- Which district has higher sales value: Yas Island or Al Reem Island?
-
-## 🔄 Error Handling & Edge Cases
-
-### Invalid Locations
-- Tell me about Atlantis Island (doesn't exist)
-- Show me data for Mars Colony
-
-### No Data Scenarios
-- What are sales in Yas Island for 1990? (no data)
-- Show me transactions in a fictional district
-
-### Ambiguous Queries
-- Compare sales between islands (missing specific islands)
-- Show me top districts (missing municipality)
-
-## 📈 Performance Testing
-
-### Rapid-fire Questions
-- How many units in Yas Island?
-- What about Saadiyat Island?
-- Compare their sales
-- Show me top districts in Abu Dhabi
-- What are rental prices there?
-
-### Large Data Requests
-- Show me all districts in Abu Dhabi City
-- Get transaction data for all of 2024
-- Compare every district in the city
+### Advanced Analysis
+- Show me top 5 districts by sales in Abu Dhabi City for 2023 → `get_top_districts_in_municipality`
+- Find properties in Yas Island for budget 300,000 AED → `find_units_by_budget`
 
 ---
 
-## 🎬 Demo Script
+## 🎬 Demo Script (8-10 minutes)
 
-**Opening:**
-1. "Compare sales between Yas Island and Saadiyat Island in 2024" → Chart auto-opens
-2. "Show me top 5 districts in Abu Dhabi City for 2023" → Another chart
+**Opening - Chart Visualization:**
+1. *"Compare sales between Yas Island and AL REEM ISLAND in 2024"* → Auto-opens chart
+2. *"Show me top 5 districts in Abu Dhabi City for 2023"* → Another chart
 
-**Context Demo:**
-3. "How many units are available in Yas Island?"
-4. "What about Saadiyat Island?" (AI remembers context)
-5. "Compare their sales in 2024" (AI remembers both locations)
+**Context Awareness Demo:**
+3. *"How many transactions occurred in Yas Island in 2024?"*
+4. *"What about AL REEM ISLAND?"* (AI remembers context)
+5. *"Compare their sales in 2024"* (AI remembers both locations)
 
-**Arabic Demo:**
-6. "كم عدد المعاملات في جزيرة ياس في العام 2024؟"
-7. "قارن مع جزيرة السعديات"
+**Multilingual Demo:**
+6. *"كم عدد المعاملات في جزيرة ياس في العام 2024؟"*
+7. *"قارن مع جزيرة السعديات"*
 
-**Advanced Features:**
-8. "Find 2-bedroom apartments in Yas Island under 150,000 AED per year"
-9. "What are the current supply levels there?"
+**Budget Search:**
+8. *"Find 2-bedroom apartments in Yas Island under 150,000 AED per year"*
+
+**Supply Information:**
+9. *"What is the current housing supply in Yas Island?"*
+
+---
+
+## 🛠️ Current Tool Capabilities
+
+**Available Tools:** 10
+- `search_geospatial_metadata` - Location validation and info
+- `get_total_sales_value` - Sales value by district/year
+- `get_transaction_count` - Transaction volume by district/year
+- `compare_sales_between_districts` - Compare two districts
+- `find_units_by_budget` - Budget-based rental search
+- `get_current_supply` - Current housing supply
+- `get_municipality_sales` - Municipality-level sales
+- `get_top_districts_in_municipality` - Top districts by sales
+- `get_districts` - List districts in municipality
+- `get_communities` - List communities
+
+**Total Answerable Questions:** ~8-10 from the original list
 
 ---
 
 *Last updated: January 17, 2026*
-*Features: Chat History (7 messages), Auto Chart Visualization, MCP Tools Integration*</content>
+*Demo Focus: Chart Auto-Display, Context Awareness, Multilingual Support*</content>
 <parameter name="filePath">d:\sandbox\Real States Smart Assistant\geo_assistant\TestingQuestions.md
