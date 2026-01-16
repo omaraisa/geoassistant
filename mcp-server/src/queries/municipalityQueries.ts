@@ -80,7 +80,7 @@ export async function getTopDistrictsByMunicipality(
   municipality: string,
   year: number,
   limit: number = 5
-): Promise<string> {
+): Promise<{ text: string; data: any[] }> {
   try {
     const whereClause = `municipality='${municipality}' AND year=${year}`;
     
@@ -91,7 +91,10 @@ export async function getTopDistrictsByMunicipality(
     });
 
     if (features.length === 0) {
-      return `No data found for ${municipality} in ${year}.`;
+      return { 
+        text: `No data found for ${municipality} in ${year}.`,
+        data: []
+      };
     }
 
     // Aggregate by district
@@ -112,7 +115,7 @@ export async function getTopDistrictsByMunicipality(
       .sort((a, b) => b[1].value - a[1].value)
       .slice(0, limit);
 
-    // Format response
+    // Format response text
     let response = `Top ${limit} Districts by Sales Value in ${municipality} (${year}):\n\n`;
     
     sorted.forEach(([district, data], index) => {
@@ -124,8 +127,20 @@ export async function getTopDistrictsByMunicipality(
 `;
     });
 
-    return response;
+    // Return both text and structured data
+    return {
+      text: response,
+      data: sorted.map(([district, data]) => ({
+        district,
+        totalSales: data.value,
+        volume: data.volume,
+        avgPrice: data.value / data.volume
+      }))
+    };
   } catch (error: any) {
-    return `Error querying top districts: ${error.message}`;
+    return {
+      text: `Error querying top districts: ${error.message}`,
+      data: []
+    };
   }
 }

@@ -107,17 +107,26 @@ export async function getMCPClient(): Promise<RealEstateMCPClient> {
 
 /**
  * Execute a real estate query through MCP
+ * Returns both human-readable text and structured data (if available)
  */
 export async function executeQuery(
   tool: string,
   params: Record<string, any>
-): Promise<string> {
+): Promise<{ text: string; data?: any }> {
   const client = await getMCPClient();
   const result = await client.callTool(tool, params);
 
-  if (result.content && result.content[0]) {
-    return result.content[0].text || JSON.stringify(result);
+  const text = result.content?.[0]?.text || JSON.stringify(result);
+  
+  // Extract structured data from resource if available
+  let data = undefined;
+  if (result.content && result.content[1] && result.content[1].resource) {
+    try {
+      data = JSON.parse(result.content[1].resource.text);
+    } catch (e) {
+      // No structured data available
+    }
   }
 
-  return 'No response from MCP server';
+  return { text, data };
 }

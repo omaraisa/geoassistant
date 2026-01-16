@@ -125,30 +125,36 @@ export async function askGeminiWithTools(
 
         try {
           const toolStartTime = Date.now();
-          // Execute through MCP
+          // Execute through MCP - returns { text, data? }
           const toolResult = await executeQuery(toolName, toolArgs);
           
-          const resultLength = typeof toolResult === 'string' ? toolResult.length : JSON.stringify(toolResult).length;
+          const resultLength = typeof toolResult.text === 'string' ? toolResult.text.length : JSON.stringify(toolResult).length;
           console.log(`[${requestId}]   ✅ Tool result: ${resultLength} chars (${Date.now() - toolStartTime}ms)`);
 
           // Detect comparison/chart-worthy tools and format data
           const args = toolArgs as any;
-          if (toolName === 'compare_sales_between_districts' && Array.isArray(toolResult)) {
+          if (toolName === 'compare_sales_between_districts' && toolResult.data) {
+            const data = toolResult.data;
             detectedChartData = {
-              title: `Sales Comparison: ${args.district1} vs ${args.district2} (${args.year})`,
-              data: toolResult.map((item: any) => ({
-                name: item.district || item.name,
-                value: item.total_sales_value || item.value || 0
-              }))
+              title: `Sales Comparison: ${args.district1} vs ${args.district2} (${args.year || 'All Years'})`,
+              data: [
+                {
+                  name: data.district1.name,
+                  value: data.district1.totalValue
+                },
+                {
+                  name: data.district2.name,
+                  value: data.district2.totalValue
+                }
+              ]
             };
             console.log(`[${requestId}]   📊 Chart data detected for ${toolName}`);
-          } else if (toolName === 'get_top_districts_in_municipality' && Array.isArray(toolResult)) {
-            const limit = args.limit || 10;
+          } else if (toolName === 'get_top_districts_in_municipality' && Array.isArray(toolResult.data)) {
             detectedChartData = {
               title: `Top Districts in ${args.municipality} (${args.year})`,
-              data: (toolResult as any[]).slice(0, limit).map((item: any) => ({
-                name: item.district || item.name,
-                value: item.total_sales || item.value || 0
+              data: toolResult.data.map((item: any) => ({
+                name: item.district,
+                value: item.totalSales
               }))
             };
             console.log(`[${requestId}]   📊 Chart data detected for ${toolName}`);
@@ -157,7 +163,7 @@ export async function askGeminiWithTools(
           functionResponses.push({
             functionResponse: {
               name: toolName,
-              response: { result: toolResult }
+              response: { result: toolResult.text }
             }
           });
         } catch (error: any) {

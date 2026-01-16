@@ -324,6 +324,14 @@ class RealEstateMCPServer {
                   `Difference:\n` +
                   `  ${district1} has ${result.comparison.valuePercentDiff > 0 ? 'higher' : 'lower'} sales by ${Math.abs(result.comparison.valuePercentDiff).toFixed(1)}%`,
               },
+              {
+                type: 'resource',
+                resource: {
+                  uri: `data:application/json,${encodeURIComponent(JSON.stringify(result))}`,
+                  mimeType: 'application/json',
+                  text: JSON.stringify(result)
+                }
+              }
             ],
           };
         }
@@ -389,8 +397,16 @@ class RealEstateMCPServer {
             content: [
               {
                 type: 'text',
-                text: result,
+                text: result.text,
               },
+              {
+                type: 'resource',
+                resource: {
+                  uri: `data:application/json,${encodeURIComponent(JSON.stringify(result.data))}`,
+                  mimeType: 'application/json',
+                  text: JSON.stringify(result.data)
+                }
+              }
             ],
           };
         }
