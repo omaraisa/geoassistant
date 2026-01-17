@@ -211,7 +211,7 @@ export async function addFeaturesToMap(features: any[], title: string = 'Search 
         type: 'simple-fill',
         color: [255, 0, 0, 0], // Fully transparent fill
         outline: {
-          color: [220, 20, 60, 1], // Strong red (crimson) outline
+          color: [0, 255, 255, 1], // Cyan outline
           width: 6 // thicker boundary for emphasis
         }
       }
