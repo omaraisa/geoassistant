@@ -96,7 +96,7 @@ export default function Sidebar() {
               const featureLayer = await addFeaturesToMap(data.chartData.features, data.chartData.title);
               await zoomToFeature(data.chartData.features[0], true);
             }
-          }”},{ else {
+          } else {
             // Chart-based results
             setChartData(data.chartData);
             setBottomPanelOpen(true);
