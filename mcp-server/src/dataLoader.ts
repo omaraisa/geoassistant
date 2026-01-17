@@ -78,6 +78,7 @@ class ArcGISDataLoader {
       where,
       outFields,
       returnGeometry: returnGeometry.toString(),
+      outSR: '4326', // Force WGS84 Lat/Lon output
       f: 'json',
     });
 
@@ -100,11 +101,26 @@ class ArcGISDataLoader {
       }
 
       const features = result.features || [];
-      const data = features.map((f: any) => ({
-        ...f.attributes,
-        // Include geometry if requested for spatial operations
-        geometry: returnGeometry ? f.geometry : undefined,
-      }));
+      const spatialReference = result.spatialReference;
+
+      const data = features.map((f: any) => {
+        if (returnGeometry) {
+          // Verify if geometry has spatial reference, if not inject from result
+          const geometry = f.geometry;
+          if (geometry && !geometry.spatialReference && spatialReference) {
+            geometry.spatialReference = spatialReference;
+          }
+
+          // Keep feature structure intact for spatial operations
+          return {
+            attributes: f.attributes,
+            geometry: geometry
+          };
+        } else {
+          // Flatten to attributes only for non-spatial queries
+          return f.attributes;
+        }
+      });
 
       console.error(`✅ Loaded ${data.length} records from layer ${layerId}`);
 

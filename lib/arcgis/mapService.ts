@@ -20,10 +20,34 @@ export const locations: Record<string, [number, number]> = {
 };
 
 export async function initializeMap(mapView: MapView) {
-  const GraphicsLayer = (await import('@arcgis/core/layers/GraphicsLayer')).default;
+  const [GraphicsLayer, LayerList] = await Promise.all([
+    import('@arcgis/core/layers/GraphicsLayer'),
+    import('@arcgis/core/widgets/LayerList')
+  ]);
+  
   view = mapView;
-  highlightLayer = new GraphicsLayer();
+  highlightLayer = new GraphicsLayer.default();
   view.map?.add(highlightLayer);
+
+  // Add LayerList widget
+  const layerList = new LayerList.default({
+    view: view,
+    container: document.createElement('div')
+  });
+
+  view.ui.add(layerList, {
+    position: 'top-right'
+  });
+
+  // Auto-load test data for development (comment out in production)
+  setTimeout(async () => {
+    const { mockBudgetSearchFeatures } = await import('./testData');
+    console.log('[DEV] Auto-loading test feature data...');
+    await addFeaturesToMap(mockBudgetSearchFeatures, 'Test: 3BR Units');
+    if (mockBudgetSearchFeatures.length > 0) {
+      await zoomToFeature(mockBudgetSearchFeatures[0], true);
+    }
+  }, 2000);
 }
 
 export async function zoomToLocation(locationName: string) {
@@ -76,48 +100,201 @@ async function highlightLocation(point: any) {
 export async function addFeaturesToMap(features: any[], title: string = 'Search Results') {
   if (!view) return null;
 
-  const FeatureLayer = (await import('@arcgis/core/layers/FeatureLayer')).default;
+  const [FeatureLayer, Graphic] = await Promise.all([
+    import('@arcgis/core/layers/FeatureLayer'),
+    import('@arcgis/core/Graphic')
+  ]);
   
   // Remove previous results layer
   if (resultsLayer) {
     view.map?.remove(resultsLayer);
   }
 
-  // Create feature layer from results with outline symbology
-  resultsLayer = new FeatureLayer({
-    source: features,
-    objectIdField: 'OBJECTID',
-    fields: Object.keys(features[0] || {}).map(name => ({
+  console.log('[addFeaturesToMap] Processing features:', features.length);
+
+  // Pre-process features to ensure they are valid Graphics with proper geometry
+  const graphics = features
+    .map((f, index) => {
+      // Separate attributes from geometry
+      const attributes = f.attributes ? { ...f.attributes } : { ...f };
+      delete attributes.geometry; // Ensure geometry is not in attributes
+      
+      // Clean up any invalid fields that might cause validation errors
+      delete attributes.globalId;
+      delete attributes.objectId;
+      
+      // Ensure OBJECTID is a proper number
+      attributes.OBJECTID = index + 1;
+
+      // Use autocast format for geometry - ArcGIS will handle the conversion
+      let geometry = null;
+      if (f.geometry) {
+        // Add explicit type for autocasting
+        if (f.geometry.rings) {
+          geometry = {
+            type: 'polygon',
+            rings: f.geometry.rings,
+            spatialReference: f.geometry.spatialReference || { wkid: 4326 }
+          };
+        } else if (f.geometry.paths) {
+          geometry = {
+            type: 'polyline',
+            paths: f.geometry.paths,
+            spatialReference: f.geometry.spatialReference || { wkid: 4326 }
+          };
+        } else if (f.geometry.x !== undefined && f.geometry.y !== undefined) {
+          geometry = {
+            type: 'point',
+            x: f.geometry.x,
+            y: f.geometry.y,
+            spatialReference: f.geometry.spatialReference || { wkid: 4326 }
+          };
+        }
+      }
+
+      if (!geometry) {
+        console.warn(`[Feature ${index}] No valid geometry found`, f);
+        return null;
+      }
+
+      const graphic = new Graphic.default({
+        geometry: geometry as any,
+        attributes: attributes
+      });
+      
+      console.log(`[Feature ${index}] Created graphic with OBJECTID: ${attributes.OBJECTID}`);
+      return graphic;
+    })
+    .filter(g => g !== null); // Remove features without valid geometries
+
+  if (graphics.length === 0) {
+    console.error('[addFeaturesToMap] No valid graphics to display');
+    return null;
+  }
+
+  console.log(`[addFeaturesToMap] Created ${graphics.length} valid graphics`);
+
+  // Dynamically create fields based on the first feature's attributes
+  const firstAttributes = graphics[0].attributes;
+  const fields = Object.keys(firstAttributes).map(name => {
+    const value = firstAttributes[name];
+    let type: 'oid' | 'string' | 'integer' | 'double' = 'string';
+    
+    if (name === 'OBJECTID') {
+      type = 'oid';
+    } else if (typeof value === 'number') {
+      type = Number.isInteger(value) ? 'integer' : 'double';
+    }
+
+    return {
       name,
-      type: name === 'OBJECTID' ? 'oid' : 'string'
-    })),
+      alias: name,
+      type,
+      editable: name !== 'OBJECTID',
+      nullable: name !== 'OBJECTID'
+    };
+  });
+
+  console.log('Creating FeatureLayer with fields:', fields);
+
+  // Create feature layer from results
+  resultsLayer = new FeatureLayer.default({
+    source: graphics,
+    objectIdField: 'OBJECTID',
+    geometryType: 'polygon',
+    spatialReference: { wkid: 4326 },
+    fields: fields as any,
+    title: title,
     renderer: {
       type: 'simple',
       symbol: {
         type: 'simple-fill',
-        color: [0, 0, 0, 0], // Transparent fill
+        color: [255, 0, 0, 0], // Fully transparent fill
         outline: {
-          color: [0, 122, 194, 1], // Blue outline
-          width: 2
+          color: [220, 20, 60, 1], // Strong red (crimson) outline
+          width: 6 // thicker boundary for emphasis
         }
       }
     } as any,
-    title,
-    popupEnabled: true
+    popupTemplate: {
+      title: '{district}',
+      content: [
+        {
+          type: 'fields',
+          fieldInfos: fields
+            .filter(f => f.name !== 'OBJECTID' && f.name !== 'geometry')
+            .map(f => ({
+              fieldName: f.name,
+              label: f.alias
+            }))
+        }
+      ]
+    },
+    visible: true,
+    opacity: 1
   });
 
   view.map?.add(resultsLayer);
+  
+  console.log('Feature Layer added to map:', resultsLayer);
+  console.log('Feature Layer visible:', resultsLayer.visible);
+  console.log('Graphics count:', graphics.length);
+  
   return resultsLayer;
 }
 
 export async function zoomToFeature(feature: any, highlight: boolean = true) {
-  if (!view || !feature?.geometry) return;
+  if (!view || !feature?.geometry) {
+    console.error('[zoomToFeature] Missing view or geometry', { view: !!view, feature });
+    return;
+  }
 
-  // Zoom to feature extent
-  await view.goTo({
-    target: feature.geometry,
-    zoom: 13
-  });
+  console.log('[zoomToFeature] Feature received:', feature);
+  console.log('[zoomToFeature] Geometry:', feature.geometry);
+
+  // Convert plain JSON geometry to autocast format
+  let geometry = null;
+  if (feature.geometry.rings) {
+    geometry = {
+      type: 'polygon',
+      rings: feature.geometry.rings,
+      spatialReference: feature.geometry.spatialReference || { wkid: 4326 }
+    };
+  } else if (feature.geometry.paths) {
+    geometry = {
+      type: 'polyline',
+      paths: feature.geometry.paths,
+      spatialReference: feature.geometry.spatialReference || { wkid: 4326 }
+    };
+  } else if (feature.geometry.x !== undefined && feature.geometry.y !== undefined) {
+    geometry = {
+      type: 'point',
+      x: feature.geometry.x,
+      y: feature.geometry.y,
+      spatialReference: feature.geometry.spatialReference || { wkid: 4326 }
+    };
+  }
+
+  if (!geometry) {
+    console.error('[zoomToFeature] Invalid geometry', feature.geometry);
+    return;
+  }
+
+  console.log('[zoomToFeature] Converted geometry:', geometry);
+  
+  // Calculate extent for polygons
+  if (geometry.type === 'polygon' && geometry.rings) {
+    const allCoords = geometry.rings.flat();
+    const lons = allCoords.map((c: number[]) => c[0]);
+    const lats = allCoords.map((c: number[]) => c[1]);
+    const extent = {
+      xmin: Math.min(...lons),
+      ymin: Math.min(...lats),
+      xmax: Math.max(...lons),
+      ymax: Math.max(...lats)
+    };
+    console.log('[zoomToFeature] Calculated extent:', extent);
+  }
 
   // Highlight if requested
   if (highlight && highlightLayer) {
@@ -135,13 +312,32 @@ export async function zoomToFeature(feature: any, highlight: boolean = true) {
     });
 
     const graphic = new Graphic({
-      geometry: feature.geometry,
+      geometry: geometry as any,
       symbol: highlightSymbol
     });
 
     highlightLayer.add(graphic);
+
+    // Zoom to exact graphic
+    try {
+      await view.goTo(graphic);
+      
+      // Log current extent for debugging
+      if (view && view.extent) {
+        console.log('[zoomToFeature] Current view extent after GRAPHIC zoom:', view.extent.toJSON());
+      }
+      console.log('[zoomToFeature] Zoom to GRAPHIC completed');
+    } catch (error) {
+      console.error('[zoomToFeature] Error zoom to GRAPHIC:', error);
+    }
+  } else {
+    // Fallback zoom if no highlight requested
+    try {
+      await view.goTo({ target: geometry as any, zoom: 15 });
+    } catch(e) { console.error(e); }
   }
 }
+
 
 export function getMapView() {
   return view;
@@ -150,3 +346,5 @@ export function getMapView() {
 export function getResultsLayer() {
   return resultsLayer;
 }
+
+export { zoomToFeature };

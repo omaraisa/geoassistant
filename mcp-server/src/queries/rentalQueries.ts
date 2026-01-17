@@ -74,27 +74,29 @@ export async function findUnitsByBudget(
     where += ` AND year = ${year}`;
   }
   
-  // Query with geometries for map display
-  const features = await arcgisClient.queryLayer(LAYERS.RENTAL_INDEX_DISTRICT, {
+  // Use RENTAL_INDEX_PROJECT (Layer 10) for more granular results (buildings/complexes)
+  // This matches user expectation of "Plot" level results closer than District
+  const features = await arcgisClient.queryLayer(LAYERS.RENTAL_INDEX_PROJECT, {
     where,
     outFields: '*',
     returnGeometry: true
   });
   
   const results = features.map((feature: any) => ({
-    district: feature.district,
-    year: feature.year,
-    layout: feature.layout,
-    avgRent: feature.avg_rent_value,
-    lowerRent: feature.lower_rent_value,
-    upperRent: feature.upper_rent_value,
-    typology: feature.typology,
-    geometry: feature.geometry // Include geometry for map
+    district: feature.attributes.district,
+    project: feature.attributes.project_name || feature.attributes.project || feature.attributes.name_en, // Try common naming conventions
+    year: feature.attributes.year,
+    layout: feature.attributes.layout,
+    avgRent: feature.attributes.avg_rent_value,
+
+    lowerRent: feature.attributes.lower_rent_value,
+    upperRent: feature.attributes.upper_rent_value,
+    typology: feature.attributes.typology,
   }));
   
   return {
     results,
-    features, // Raw features with geometries
+    features, // Raw features with attributes and geometry separated
     count: results.length,
     budget,
     layout,
