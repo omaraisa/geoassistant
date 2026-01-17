@@ -159,6 +159,21 @@ export async function askGeminiWithTools(
               }))
             };
             console.log(`[${requestId}]   📊 Chart data detected for ${toolName}`);
+          } else if (toolName === 'find_units_by_budget' && toolResult.data?.results) {
+            // Format for map + table display
+            detectedChartData = {
+              type: 'features',
+              title: `Affordable ${args.layout} units within AED ${args.budget?.toLocaleString()}`,
+              features: toolResult.data.features,
+              tableData: toolResult.data.results.map((item: any) => ({
+                District: item.district,
+                Layout: item.layout,
+                'Avg Rent (AED)': item.avgRent?.toLocaleString(),
+                'Range': `${item.lowerRent?.toLocaleString()} - ${item.upperRent?.toLocaleString()}`,
+                Typology: item.typology
+              }))
+            };
+            console.log(`[${requestId}]   🗺️  Feature data detected for ${toolName}: ${toolResult.data.results.length} results`);
           }
 
           functionResponses.push({

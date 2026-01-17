@@ -1,8 +1,10 @@
 import type MapView from '@arcgis/core/views/MapView';
 import type GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import type FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 
 let view: MapView | null = null;
 let highlightLayer: GraphicsLayer | null = null;
+let resultsLayer: FeatureLayer | null = null;
 
 export const locations: Record<string, [number, number]> = {
   'Abu Dhabi': [54.3773, 24.4539],
@@ -69,4 +71,82 @@ async function highlightLocation(point: any) {
   });
 
   highlightLayer.add(graphic);
+}
+
+export async function addFeaturesToMap(features: any[], title: string = 'Search Results') {
+  if (!view) return null;
+
+  const FeatureLayer = (await import('@arcgis/core/layers/FeatureLayer')).default;
+  
+  // Remove previous results layer
+  if (resultsLayer) {
+    view.map?.remove(resultsLayer);
+  }
+
+  // Create feature layer from results with outline symbology
+  resultsLayer = new FeatureLayer({
+    source: features,
+    objectIdField: 'OBJECTID',
+    fields: Object.keys(features[0] || {}).map(name => ({
+      name,
+      type: name === 'OBJECTID' ? 'oid' : 'string'
+    })),
+    renderer: {
+      type: 'simple',
+      symbol: {
+        type: 'simple-fill',
+        color: [0, 0, 0, 0], // Transparent fill
+        outline: {
+          color: [0, 122, 194, 1], // Blue outline
+          width: 2
+        }
+      }
+    } as any,
+    title,
+    popupEnabled: true
+  });
+
+  view.map?.add(resultsLayer);
+  return resultsLayer;
+}
+
+export async function zoomToFeature(feature: any, highlight: boolean = true) {
+  if (!view || !feature?.geometry) return;
+
+  // Zoom to feature extent
+  await view.goTo({
+    target: feature.geometry,
+    zoom: 13
+  });
+
+  // Highlight if requested
+  if (highlight && highlightLayer) {
+    const Graphic = (await import('@arcgis/core/Graphic')).default;
+    const SimpleFillSymbol = (await import('@arcgis/core/symbols/SimpleFillSymbol')).default;
+
+    highlightLayer.removeAll();
+
+    const highlightSymbol = new SimpleFillSymbol({
+      color: [255, 255, 0, 0.3], // Yellow transparent
+      outline: {
+        color: [255, 165, 0, 1], // Orange outline
+        width: 3
+      }
+    });
+
+    const graphic = new Graphic({
+      geometry: feature.geometry,
+      symbol: highlightSymbol
+    });
+
+    highlightLayer.add(graphic);
+  }
+}
+
+export function getMapView() {
+  return view;
+}
+
+export function getResultsLayer() {
+  return resultsLayer;
 }

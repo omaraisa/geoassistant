@@ -7,15 +7,22 @@ import { useAppContext } from '@/components/AppContext';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function BottomPanel() {
-  const { tableData, chartData, isBottomPanelOpen, setBottomPanelOpen } = useAppContext();
+  const { tableData, chartData, featureData, isBottomPanelOpen, setBottomPanelOpen } = useAppContext();
   const [activeTab, setActiveTab] = useState<'table' | 'chart'>('table');
 
   // Auto-switch to chart tab if chart data arrives
   React.useEffect(() => {
-    if (chartData) {
+    if (chartData && chartData.type !== 'features') {
       setActiveTab('chart');
     }
   }, [chartData]);
+
+  // Auto-switch to table tab if feature data arrives
+  React.useEffect(() => {
+    if (featureData || (chartData && chartData.type === 'features')) {
+      setActiveTab('table');
+    }
+  }, [featureData, chartData]);
 
   return (
     <div 

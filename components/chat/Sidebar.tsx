@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAppContext } from '@/components/AppContext';
+import { addFeaturesToMap, zoomToFeature } from '@/lib/arcgis/mapService';
 
 interface Message {
   id: string;
@@ -12,7 +13,7 @@ interface Message {
 }
 
 export default function Sidebar() {
-  const { setChartData, setBottomPanelOpen } = useAppContext();
+  const { setChartData, setTableData, setFeatureData, setBottomPanelOpen } = useAppContext();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -80,11 +81,26 @@ export default function Sidebar() {
         };
         setMessages(prev => [...prev, aiMessage]);
         
-        // Handle chart data if present
+        // Handle visualization data
         if (data.chartData) {
-          console.log('[Sidebar] Chart data received:', data.chartData);
-          setChartData(data.chartData);
-          setBottomPanelOpen(true);
+          console.log('[Sidebar] Visualization data received:', data.chartData);
+          
+          if (data.chartData.type === 'features') {
+            // Feature-based results (map + table)
+            setTableData(data.chartData.tableData);
+            setFeatureData(data.chartData);
+            setBottomPanelOpen(true);
+            
+            // Add features to map and zoom to first result
+            if (data.chartData.features && data.chartData.features.length > 0) {
+              const featureLayer = await addFeaturesToMap(data.chartData.features, data.chartData.title);
+              await zoomToFeature(data.chartData.features[0], true);
+            }
+          } else {
+            // Chart-based results
+            setChartData(data.chartData);
+            setBottomPanelOpen(true);
+          }
         }
       } else if (data.error) {
         const errorMessage: Message = {

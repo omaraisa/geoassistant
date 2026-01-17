@@ -351,6 +351,14 @@ class RealEstateMCPServer {
                   districts.slice(0, 10).join('\n') +
                   (districts.length > 10 ? `\n... and ${districts.length - 10} more` : ''),
               },
+              {
+                type: 'resource',
+                resource: {
+                  uri: `data:application/json,${encodeURIComponent(JSON.stringify({ results: result.results, features: result.features }))}`,
+                  mimeType: 'application/json',
+                  text: JSON.stringify({ results: result.results, features: result.features })
+                }
+              }
             ],
           };
         }

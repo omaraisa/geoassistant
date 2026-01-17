@@ -7,6 +7,8 @@ interface AppContextType {
   setTableData: (data: any[] | null) => void;
   chartData: any | null;
   setChartData: (data: any | null) => void;
+  featureData: any | null;
+  setFeatureData: (data: any | null) => void;
   isBottomPanelOpen: boolean;
   setBottomPanelOpen: (open: boolean) => void;
 }
@@ -16,6 +18,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export function AppContextProvider({ children }: { children: ReactNode }) {
   const [tableData, setTableData] = useState<any[] | null>(null);
   const [chartData, setChartData] = useState<any | null>(null);
+  const [featureData, setFeatureData] = useState<any | null>(null);
   const [isBottomPanelOpen, setBottomPanelOpen] = useState(false);
 
   return (
@@ -24,6 +27,8 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
       setTableData,
       chartData,
       setChartData,
+      featureData,
+      setFeatureData,
       isBottomPanelOpen,
       setBottomPanelOpen
     }}>

@@ -74,19 +74,27 @@ export async function findUnitsByBudget(
     where += ` AND year = ${year}`;
   }
   
-  const data = await arcgisClient.getRentalIndexDistrict(where);
+  // Query with geometries for map display
+  const features = await arcgisClient.queryLayer(LAYERS.RENTAL_INDEX_DISTRICT, {
+    where,
+    outFields: '*',
+    returnGeometry: true
+  });
   
-  const results = data.map((record: any) => ({
-    district: record.district,
-    year: record.year,
-    layout: record.layout,
-    avgRent: record.avg_rent_value,
-    lowerRent: record.lower_rent_value,
-    upperRent: record.upper_rent_value,
+  const results = features.map((feature: any) => ({
+    district: feature.district,
+    year: feature.year,
+    layout: feature.layout,
+    avgRent: feature.avg_rent_value,
+    lowerRent: feature.lower_rent_value,
+    upperRent: feature.upper_rent_value,
+    typology: feature.typology,
+    geometry: feature.geometry // Include geometry for map
   }));
   
   return {
     results,
+    features, // Raw features with geometries
     count: results.length,
     budget,
     layout,
