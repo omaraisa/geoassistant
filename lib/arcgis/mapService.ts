@@ -35,9 +35,9 @@ export async function initializeMap(mapView: MapView) {
     container: document.createElement('div')
   });
 
-  view.ui.add(layerList, {
-    position: 'top-right'
-  });
+  // view.ui.add(layerList, {
+  //   position: 'top-right'
+  // });
 
 }
 
@@ -171,10 +171,15 @@ export async function addFeaturesToMap(features: any[], title: string = 'Search 
     } else if (typeof value === 'number') {
       type = Number.isInteger(value) ? 'integer' : 'double';
     }
+    // Prefer a friendlier alias for project name fields
+    let alias = name;
+    if (name === 'project' || name === 'project_name' || name === 'name_en') {
+      alias = 'Project Name';
+    }
 
     return {
       name,
-      alias: name,
+      alias,
       type,
       editable: name !== 'OBJECTID',
       nullable: name !== 'OBJECTID'
@@ -201,7 +206,12 @@ export async function addFeaturesToMap(features: any[], title: string = 'Search 
       }
     } as any,
     popupTemplate: {
-      title: '{district}',
+      // Use the most appropriate project-name field for the popup title when available
+      title: (function() {
+        const titleCandidates = ['project', 'project_name', 'name_en'];
+        const found = fields.find(f => titleCandidates.includes(f.name));
+        return `{${found ? found.name : 'district'}}`;
+      })(),
       content: [
         {
           type: 'fields',
