@@ -39,15 +39,6 @@ export async function initializeMap(mapView: MapView) {
     position: 'top-right'
   });
 
-  // Auto-load test data for development (comment out in production)
-  setTimeout(async () => {
-    const { mockBudgetSearchFeatures } = await import('./testData');
-    console.log('[DEV] Auto-loading test feature data...');
-    await addFeaturesToMap(mockBudgetSearchFeatures, 'Test: 3BR Units');
-    if (mockBudgetSearchFeatures.length > 0) {
-      await zoomToFeature(mockBudgetSearchFeatures[0], true);
-    }
-  }, 2000);
 }
 
 export async function zoomToLocation(locationName: string) {
