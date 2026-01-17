@@ -13,7 +13,7 @@ This file contains test questions to showcase the key features of the Real Estat
 ## 🏠 Rental Data Questions
 
 ### 🔹 Descriptive
-- Find projects that have 3BR units within a budget of AED 100,000 → `find_units_by_budget`
+- Find me projects with 3BR units within a budget of AED 100,000 → `find_units_by_budget`
 
 ### 🔹 Comparative
 *No rental comparison tools currently available*
@@ -29,7 +29,7 @@ This file contains test questions to showcase the key features of the Real Estat
 
 ### Advanced Analysis
 - Show me top 5 districts by sales in Abu Dhabi City for 2023 → `get_top_districts_in_municipality`
-- Find properties in Yas Island for budget 300,000 AED → `find_units_by_budget`
+- Find projects with units in Yas Island within budget 300,000 AED → `find_units_by_budget`
 
 ## 🌍 Multilingual Support
 
@@ -37,9 +37,7 @@ This file contains test questions to showcase the key features of the Real Estat
 - كم عدد المعاملات في جزيرة ياس في العام 2024؟ → `get_transaction_count`
 - قارن المبيعات بين جزيرة ياس وجزيرة الريم في العام 2024 → `compare_sales_between_districts`
 - اعرض أفضل 5 مناطق من حيث المبيعات في أبو ظبي لعام 2023 → `get_top_districts_in_municipality`
-- ابحث عن شقة 3 غرف نوم بميزانية 100,000 درهم → `find_units_by_budget`
-  
-	- ابحث عن مشاريع تحتوي وحدات 3 غرف نوم بميزانية 100,000 درهم → `find_units_by_budget`
+- ابحث عن مشاريع بوحدات 3 غرف نوم بميزانية 100,000 درهم → `find_units_by_budget`
 
 ### Mixed Language Conversations
 - Tell me about Yas Island

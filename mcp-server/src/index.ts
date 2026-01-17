@@ -142,7 +142,7 @@ class RealEstateMCPServer {
           },
           {
             name: 'find_units_by_budget',
-            description: 'Find rental units within a budget',
+            description: 'Find real estate projects (buildings/complexes) with rental units within a budget at the project level',
             inputSchema: {
               type: 'object',
               properties: {

@@ -171,15 +171,10 @@ export async function addFeaturesToMap(features: any[], title: string = 'Search 
     } else if (typeof value === 'number') {
       type = Number.isInteger(value) ? 'integer' : 'double';
     }
-    // Prefer a friendlier alias for project name fields
-    let alias = name;
-    if (name === 'project' || name === 'project_name' || name === 'name_en') {
-      alias = 'Project Name';
-    }
 
     return {
       name,
-      alias,
+      alias: name,
       type,
       editable: name !== 'OBJECTID',
       nullable: name !== 'OBJECTID'
@@ -206,12 +201,7 @@ export async function addFeaturesToMap(features: any[], title: string = 'Search 
       }
     } as any,
     popupTemplate: {
-      // Use the most appropriate project-name field for the popup title when available
-      title: (function() {
-        const titleCandidates = ['project', 'project_name', 'name_en'];
-        const found = fields.find(f => titleCandidates.includes(f.name));
-        return `{${found ? found.name : 'district'}}`;
-      })(),
+      title: '{project}',
       content: [
         {
           type: 'fields',

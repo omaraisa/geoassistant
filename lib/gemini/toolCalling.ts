@@ -163,14 +163,14 @@ export async function askGeminiWithTools(
             // Format for map + table display
             detectedChartData = {
               type: 'features',
-              title: `Affordable ${args.layout} units within AED ${args.budget?.toLocaleString()}`,
+              title: `Projects with ${args.layout} units within AED ${args.budget?.toLocaleString()}`,
               features: toolResult.data.features,
               tableData: toolResult.data.results.map((item: any) => ({
-                District: item.district,
-                Layout: item.layout,
+                'Project': item.project || 'N/A',
+                'District': item.district,
+                'Layout': item.layout,
                 'Avg Rent (AED)': item.avgRent?.toLocaleString(),
-                'Range': `${item.lowerRent?.toLocaleString()} - ${item.upperRent?.toLocaleString()}`,
-                Typology: item.typology
+                'Range': `${item.lowerRent?.toLocaleString()} - ${item.upperRent?.toLocaleString()}`
               }))
             };
             console.log(`[${requestId}]   🗺️  Feature data detected for ${toolName}: ${toolResult.data.results.length} results`);
