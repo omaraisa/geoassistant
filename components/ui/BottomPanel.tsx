@@ -14,12 +14,14 @@ export default function BottomPanel() {
 
   const handleRowClick = async (index: number) => {
     setSelectedRowIndex(index);
-    
-    // If we have feature data with geometries, zoom to the selected feature
-    if (featureData?.features && featureData.features[index]) {
-      await zoomToFeature(featureData.features[index], true);
+
+    const feature = featureData?.features?.[index];
+    if (feature) {
+      await zoomToFeature(feature, true);
+    } else {
+      console.warn('[BottomPanel] No feature found at index', index);
     }
-  };
+  };”
 
   // Auto-switch to chart tab if chart data arrives
   React.useEffect(() => {

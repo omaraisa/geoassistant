@@ -90,13 +90,13 @@ export default function Sidebar() {
             setTableData(data.chartData.tableData);
             setFeatureData(data.chartData);
             setBottomPanelOpen(true);
-            
+
             // Add features to map and zoom to first result
             if (data.chartData.features && data.chartData.features.length > 0) {
               const featureLayer = await addFeaturesToMap(data.chartData.features, data.chartData.title);
               await zoomToFeature(data.chartData.features[0], true);
             }
-          } else {
+          }”},{ else {
             // Chart-based results
             setChartData(data.chartData);
             setBottomPanelOpen(true);

@@ -110,8 +110,6 @@ export async function addFeaturesToMap(features: any[], title: string = 'Search 
     view.map?.remove(resultsLayer);
   }
 
-  console.log('[addFeaturesToMap] Processing features:', features.length);
-
   // Pre-process features to ensure they are valid Graphics with proper geometry
   const graphics = features
     .map((f, index) => {
@@ -161,8 +159,6 @@ export async function addFeaturesToMap(features: any[], title: string = 'Search 
         geometry: geometry as any,
         attributes: attributes
       });
-      
-      console.log(`[Feature ${index}] Created graphic with OBJECTID: ${attributes.OBJECTID}`);
       return graphic;
     })
     .filter(g => g !== null); // Remove features without valid geometries
@@ -172,7 +168,6 @@ export async function addFeaturesToMap(features: any[], title: string = 'Search 
     return null;
   }
 
-  console.log(`[addFeaturesToMap] Created ${graphics.length} valid graphics`);
 
   // Dynamically create fields based on the first feature's attributes
   const firstAttributes = graphics[0].attributes;
@@ -194,8 +189,6 @@ export async function addFeaturesToMap(features: any[], title: string = 'Search 
       nullable: name !== 'OBJECTID'
     };
   });
-
-  console.log('Creating FeatureLayer with fields:', fields);
 
   // Create feature layer from results
   resultsLayer = new FeatureLayer.default({
@@ -235,11 +228,6 @@ export async function addFeaturesToMap(features: any[], title: string = 'Search 
   });
 
   view.map?.add(resultsLayer);
-  
-  console.log('Feature Layer added to map:', resultsLayer);
-  console.log('Feature Layer visible:', resultsLayer.visible);
-  console.log('Graphics count:', graphics.length);
-  
   return resultsLayer;
 }
 
@@ -248,9 +236,6 @@ export async function zoomToFeature(feature: any, highlight: boolean = true) {
     console.error('[zoomToFeature] Missing view or geometry', { view: !!view, feature });
     return;
   }
-
-  console.log('[zoomToFeature] Feature received:', feature);
-  console.log('[zoomToFeature] Geometry:', feature.geometry);
 
   // Convert plain JSON geometry to autocast format
   let geometry = null;
@@ -280,7 +265,6 @@ export async function zoomToFeature(feature: any, highlight: boolean = true) {
     return;
   }
 
-  console.log('[zoomToFeature] Converted geometry:', geometry);
   
   // Calculate extent for polygons
   if (geometry.type === 'polygon' && geometry.rings) {
@@ -293,7 +277,6 @@ export async function zoomToFeature(feature: any, highlight: boolean = true) {
       xmax: Math.max(...lons),
       ymax: Math.max(...lats)
     };
-    console.log('[zoomToFeature] Calculated extent:', extent);
   }
 
   // Highlight if requested
@@ -318,15 +301,16 @@ export async function zoomToFeature(feature: any, highlight: boolean = true) {
 
     highlightLayer.add(graphic);
 
-    // Zoom to exact graphic
+    // Zoom to exact graphic with higher zoom level and animation
     try {
-      await view.goTo(graphic);
+      await view.goTo({
+        target: graphic,
+        zoom: 16 // Higher zoom for better visibility of individual features
+      }, {
+        duration: 1000, // 1 second animation
+        easing: 'ease-in-out'
+      });
       
-      // Log current extent for debugging
-      if (view && view.extent) {
-        console.log('[zoomToFeature] Current view extent after GRAPHIC zoom:', view.extent.toJSON());
-      }
-      console.log('[zoomToFeature] Zoom to GRAPHIC completed');
     } catch (error) {
       console.error('[zoomToFeature] Error zoom to GRAPHIC:', error);
     }
@@ -346,5 +330,3 @@ export function getMapView() {
 export function getResultsLayer() {
   return resultsLayer;
 }
-
-export { zoomToFeature };
