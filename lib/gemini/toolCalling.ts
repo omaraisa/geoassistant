@@ -54,7 +54,8 @@ export async function askGeminiWithTools(
     console.log(`${'='.repeat(80)}\n`);
 
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash', // Changed from gemini-2.5-flash for better quota availability (higher limits)
+      model: 'gemini-flash-latest',
+      // model: 'gemini-2.5-flash',
       systemInstruction: SYSTEM_INSTRUCTION,
     });
 
@@ -200,14 +201,6 @@ export async function askGeminiWithTools(
   } catch (error: any) {
     console.error(`[${requestId}] ❌ GEMINI ERROR after ${geminiCallCount} API calls:`, error.message);
     console.log(`${'='.repeat(80)}\n`);
-    
-    // Handle quota exceeded errors gracefully
-    if (error.message.includes('429') || error.message.includes('quota') || error.message.includes('Too Many Requests')) {
-      const fallbackResponse = "I'm currently experiencing high demand and have reached my API limits. For a full demo, please try again later or contact support for a premium API key setup. In the meantime, I can show you our data visualization features!";
-      console.log(`[${requestId}] ⚠️  Quota exceeded - returning fallback response`);
-      return { response: fallbackResponse, chartData: detectedChartData };
-    }
-    
     throw new Error(`Failed to process with Gemini: ${error.message}`);
   }
 }
