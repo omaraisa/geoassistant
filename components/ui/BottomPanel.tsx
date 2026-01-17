@@ -5,10 +5,21 @@ import { ChevronUp, ChevronDown, Table, BarChart3 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAppContext } from '@/components/AppContext';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { zoomToFeature } from '@/lib/arcgis/mapService';
 
 export default function BottomPanel() {
   const { tableData, chartData, featureData, isBottomPanelOpen, setBottomPanelOpen } = useAppContext();
   const [activeTab, setActiveTab] = useState<'table' | 'chart'>('table');
+  const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
+
+  const handleRowClick = async (index: number) => {
+    setSelectedRowIndex(index);
+    
+    // If we have feature data with geometries, zoom to the selected feature
+    if (featureData?.features && featureData.features[index]) {
+      await zoomToFeature(featureData.features[index], true);
+    }
+  };
 
   // Auto-switch to chart tab if chart data arrives
   React.useEffect(() => {
@@ -81,7 +92,16 @@ export default function BottomPanel() {
                 </thead>
                 <tbody>
                   {tableData.map((row, i) => (
-                    <tr key={i} className='hover:bg-slate-50 border-b border-gray-100'>
+                    <tr 
+                      key={i} 
+                      onClick={() => handleRowClick(i)}
+                      className={clsx(
+                        'border-b border-gray-100 cursor-pointer transition-colors',
+                        selectedRowIndex === i 
+                          ? 'bg-yellow-100 hover:bg-yellow-200' 
+                          : 'hover:bg-slate-50'
+                      )}
+                    >
                       {Object.values(row).map((val: any, j) => (
                         <td key={j} className='px-4 py-2'>{val?.toString()}</td>
                       ))}
