@@ -47,7 +47,7 @@ export async function askGeminiWithTools(
   const requestId = Date.now();
   let geminiCallCount = 0;
   let detectedChartData: any = null;
-  
+
   try {
     console.log(`\n${'='.repeat(80)}`);
     console.log(`[REQUEST ${requestId}] USER MESSAGE: "${userMessage}"`);
@@ -87,10 +87,10 @@ export async function askGeminiWithTools(
     geminiCallCount++;
     console.log(`[${requestId}] 🔵 GEMINI API CALL #${geminiCallCount}: Sending initial message`);
     const startTime = Date.now();
-    
+
     let result = await chat.sendMessage(userMessage);
     let response = result.response;
-    
+
     console.log(`[${requestId}] ✅ GEMINI RESPONSE #${geminiCallCount} (${Date.now() - startTime}ms)`);
 
     // Loop to handle potential multi-turn tool calling (Recursive Tool Execution)
@@ -114,21 +114,21 @@ export async function askGeminiWithTools(
       // We have tools to execute
       loopCount++;
       console.log(`[${requestId}] 🔧 Function calls requested (Loop ${loopCount}): ${functionCalls.length}`);
-      
+
       const functionResponses = [];
-      
+
       for (let i = 0; i < functionCalls.length; i++) {
         const functionCall = functionCalls[i];
         const toolName = functionCall.name;
         const toolArgs = functionCall.args;
 
-        console.log(`[${requestId}]   Tool ${i+1}/${functionCalls.length}: ${toolName}(${JSON.stringify(toolArgs).substring(0, 100)}...)`);
+        console.log(`[${requestId}]   Tool ${i + 1}/${functionCalls.length}: ${toolName}(${JSON.stringify(toolArgs).substring(0, 100)}...)`);
 
         try {
           const toolStartTime = Date.now();
           // Execute through MCP - returns { text, data? }
           const toolResult = await executeQuery(toolName, toolArgs);
-          
+
           const resultLength = typeof toolResult.text === 'string' ? toolResult.text.length : JSON.stringify(toolResult).length;
           console.log(`[${requestId}]   ✅ Tool result: ${resultLength} chars (${Date.now() - toolStartTime}ms)`);
 
@@ -159,6 +159,16 @@ export async function askGeminiWithTools(
               }))
             };
             console.log(`[${requestId}]   📊 Chart data detected for ${toolName}`);
+          } else if (toolName === 'compare_rental_prices' && toolResult.data) {
+            const data = toolResult.data;
+            detectedChartData = {
+              title: `Rental Comparison (${args.entityType || 'district'})`,
+              data: data.results.map((r: any) => ({
+                name: r.entity,
+                value: r.averageRent
+              }))
+            };
+            console.log(`[${requestId}]   📊 Chart data detected for ${toolName}`);
           } else if (toolName === 'find_units_by_budget' && toolResult.data?.results) {
             // Format for map + table display
             detectedChartData = {
@@ -184,7 +194,7 @@ export async function askGeminiWithTools(
           });
         } catch (error: any) {
           console.error(`[${requestId}]   ❌ Tool ${toolName} failed:`, error.message);
-          
+
           functionResponses.push({
             functionResponse: {
               name: toolName,
@@ -198,7 +208,7 @@ export async function askGeminiWithTools(
       geminiCallCount++;
       console.log(`\n[${requestId}] 🔵 GEMINI API CALL #${geminiCallCount}: Sending tool results back`);
       const loopStartTime = Date.now();
-      
+
       // IMPORTANT: update the 'result' and 'response' variables for the next iteration
       result = await chat.sendMessage(functionResponses);
       response = result.response;
@@ -208,9 +218,9 @@ export async function askGeminiWithTools(
 
     // If we get here, we exceeded max loops
     console.error(`[${requestId}] ⚠️ Max tool loops (${MAX_TOOL_LOOPS}) exceeded.`);
-    return { 
+    return {
       response: "I'm having trouble processing your request (too many steps). Please try a simpler question.",
-      chartData: detectedChartData 
+      chartData: detectedChartData
     };
 
   } catch (error: any) {
@@ -233,7 +243,7 @@ export async function continueConversation(
   history: ConversationTurn[]
 ): Promise<{ response: string; newHistory: ConversationTurn[]; chartData?: any }> {
   const result = await askGeminiWithTools(userMessage, history);
-  
+
   const newHistory = [
     ...history,
     {

@@ -21,7 +21,7 @@ export default function BottomPanel() {
     } else {
       console.warn('[BottomPanel] No feature found at index', index);
     }
-  };”
+  };
 
   // Auto-switch to chart tab if chart data arrives
   React.useEffect(() => {

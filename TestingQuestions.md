@@ -16,13 +16,15 @@ This file contains test questions to showcase the key features of the Real Estat
 - Find me projects with 3BR units within a budget of AED 100,000 → `find_units_by_budget`
 
 ### 🔹 Comparative
-*No rental comparison tools currently available*
+- Compare rent between Reem Island and Saadiyat Island → `compare_rental_prices`
+- Which is cheaper: Yas Island or Al Raha Beach? → `compare_rental_prices`
+- Compare rent for 2BR apartments in Yas Island vs Saadiyat Island → `compare_rental_prices`
+
 
 ## 📦 Supply Data Questions
 
 ### 🔹 Descriptive
-- What is the current housing supply by community? → `get_current_supply`
-- What is the total number of 2BR units in YN7 for 2024? → `get_current_supply`
+- What is the total number of 2BR units in AL REEM ISLAND for 2024? → `get_current_supply`
 
 ### 🔹 Comparative
 *No supply comparison tools currently available*

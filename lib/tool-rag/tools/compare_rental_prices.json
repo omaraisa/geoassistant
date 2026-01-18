@@ -1,0 +1,71 @@
+{
+    "name": "compare_rental_prices",
+    "category": "rental",
+    "description": "Compares rental prices/index between multiple districts, projects, or communities.",
+    "whenToUse": [
+        "User asks to compare rent between two or more locations.",
+        "User wants to know which area is more expensive/cheaper for rent.",
+        "User asks for a rental comparison chart."
+    ],
+    "keywords": [
+        "compare rent",
+        "rental comparison",
+        "cheaper",
+        "expensive",
+        "rent vs",
+        "rent comparison",
+        "مقارنة الايجار",
+        "ارخص",
+        "اغلى"
+    ],
+    "examples": [
+        {
+            "user": "Compare rent in Yas Island, Saadiyat and Reem Island",
+            "notes": "call compare_rental_prices(['Yas Island', 'Saadiyat Island', 'Al Reem Island'], 'district')"
+        },
+        {
+            "user": "Which is cheaper for 2BR apartments: Yas or Reem?",
+            "notes": "call compare_rental_prices(['Yas Island', 'Al Reem Island'], 'district', undefined, undefined, '2 beds')"
+        }
+    ],
+    "gemini": {
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "entities": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of names to compare (e.g. ['Yas Island', 'Saadiyat'])"
+                },
+                "entityType": {
+                    "type": "string",
+                    "enum": [
+                        "district",
+                        "project",
+                        "community"
+                    ],
+                    "description": "Type of entities being compared. Default to 'district' if ambiguous."
+                },
+                "year": {
+                    "type": "number",
+                    "description": "Year (optional)"
+                },
+                "typology": {
+                    "type": "string",
+                    "description": "Property type (optional, e.g. 'Apartment / Duplex')"
+                },
+                "layout": {
+                    "type": "string",
+                    "description": "Layout (optional, e.g. '1 bed', '2 beds')"
+                }
+            },
+            "required": [
+                "entities",
+                "entityType"
+            ],
+            "additionalProperties": false
+        }
+    }
+}

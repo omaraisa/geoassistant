@@ -141,6 +141,29 @@ class RealEstateMCPServer {
             },
           },
           {
+            name: 'compare_rental_prices',
+            description: 'Compares rental prices/index between multiple districts, projects, or communities',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                entities: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'List of names to compare'
+                },
+                entityType: {
+                  type: 'string',
+                  enum: ['district', 'project', 'community'],
+                  description: 'Type of entities being compared'
+                },
+                year: { type: 'number', description: 'Year (optional)' },
+                typology: { type: 'string', description: 'Property type (optional)' },
+                layout: { type: 'string', description: 'Layout (optional)' },
+              },
+              required: ['entities', 'entityType'],
+            },
+          },
+          {
             name: 'find_units_by_budget',
             description: 'Find real estate projects (buildings/complexes) with rental units within a budget at the project level',
             inputSchema: {
@@ -172,9 +195,9 @@ class RealEstateMCPServer {
             inputSchema: {
               type: 'object',
               properties: {
-                municipality: { 
-                  type: 'string', 
-                  description: 'Municipality name (e.g., "Abu Dhabi City", "Al Ain City")' 
+                municipality: {
+                  type: 'string',
+                  description: 'Municipality name (e.g., "Abu Dhabi City", "Al Ain City")'
                 },
                 year: { type: 'number', description: 'Year (optional)' },
               },
@@ -237,7 +260,7 @@ class RealEstateMCPServer {
             name: d.name_en,
             municipality: d.municipality_name,
           }));
-          
+
           return {
             content: [
               {
@@ -250,19 +273,19 @@ class RealEstateMCPServer {
 
         if (name === 'get_communities') {
           const district = (args as { district?: string })?.district;
-          
+
           let where = '1=1';
           if (district) {
             where = `UPPER(district_name) = '${district.toUpperCase()}'`;
           }
-          
+
           const communities = await arcgisClient.getCommunities(where);
           const communityList = communities.map((c: any) => ({
             id: c.community_id,
             name: c.name_en,
             district: c.district_name,
           }));
-          
+
           return {
             content: [
               {
@@ -276,7 +299,7 @@ class RealEstateMCPServer {
         if (name === 'get_total_sales_value') {
           const { district, year, typology, layout } = args as any;
           const result = await salesQueries.getTotalSalesValue({ district, year, typology, layout });
-          
+
           return {
             content: [
               {
@@ -293,7 +316,7 @@ class RealEstateMCPServer {
         if (name === 'get_transaction_count') {
           const { district, year } = args as any;
           const result = await salesQueries.getTransactionCount({ district, year });
-          
+
           return {
             content: [
               {
@@ -309,7 +332,7 @@ class RealEstateMCPServer {
         if (name === 'compare_sales_between_districts') {
           const { district1, district2, year } = args as any;
           const result = await salesQueries.compareSalesBetweenDistricts(district1, district2, year);
-          
+
           return {
             content: [
               {
@@ -336,12 +359,34 @@ class RealEstateMCPServer {
           };
         }
 
+        if (name === 'compare_rental_prices') {
+          const { entities, entityType, year, typology, layout } = args as any;
+          const result = await rentalQueries.compareRentalValues(entities, entityType, year, typology, layout);
+
+          return {
+            content: [
+              {
+                type: 'text',
+                text: result.comparison,
+              },
+              {
+                type: 'resource',
+                resource: {
+                  uri: `data:application/json,${encodeURIComponent(JSON.stringify(result))}`,
+                  mimeType: 'application/json',
+                  text: JSON.stringify(result)
+                }
+              }
+            ],
+          };
+        }
+
         if (name === 'find_units_by_budget') {
           const { budget, layout, year } = args as any;
           const result = await rentalQueries.findUnitsByBudget(budget, layout, year);
-          
+
           const districts = result.results.map(r => `${r.district} (avg: AED ${Math.round(r.avgRent).toLocaleString()})`);
-          
+
           return {
             content: [
               {
@@ -366,7 +411,7 @@ class RealEstateMCPServer {
         if (name === 'get_current_supply') {
           const { district, year, layout } = args as any;
           const result = await supplyQueries.getCurrentSupplyByCommunity({ district, year, layout });
-          
+
           return {
             content: [
               {
@@ -374,7 +419,7 @@ class RealEstateMCPServer {
                 text: `Supply in ${district} for ${year}:\n` +
                   `Total Units: ${result.totalSupply.toLocaleString()}\n` +
                   `Breakdown:\n` +
-                  result.results.slice(0, 5).map(r => 
+                  result.results.slice(0, 5).map(r =>
                     `  ${r.layout || 'All'} (${r.typology}): ${r.totalSupply.toLocaleString()} units`
                   ).join('\n') +
                   (result.results.length > 5 ? `\n... and ${result.results.length - 5} more categories` : ''),
@@ -386,7 +431,7 @@ class RealEstateMCPServer {
         if (name === 'get_municipality_sales') {
           const { municipality, year } = args as any;
           const result = await municipalityQueries.getTotalSalesByMunicipality(municipality, year);
-          
+
           return {
             content: [
               {
@@ -400,7 +445,7 @@ class RealEstateMCPServer {
         if (name === 'get_top_districts_in_municipality') {
           const { municipality, year, limit } = args as any;
           const result = await municipalityQueries.getTopDistrictsByMunicipality(municipality, year, limit || 5);
-          
+
           return {
             content: [
               {

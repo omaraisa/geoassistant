@@ -65,7 +65,7 @@ class ArcGISDataLoader {
 
     // Create cache key
     const cacheKey = `${layerId}-${JSON.stringify(options)}`;
-    
+
     // Check cache
     const cached = this.cache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
@@ -87,7 +87,7 @@ class ArcGISDataLoader {
 
     try {
       console.error(`🔍 Querying layer ${layerId}...`);
-      
+
       const response = await fetch(`${queryUrl}?${params.toString()}`);
 
       if (!response.ok) {
@@ -149,7 +149,7 @@ class ArcGISDataLoader {
       });
 
       const url = `${this.baseUrl}/find?${params.toString()}`;
-      
+
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`ArcGIS find failed: ${response.statusText}`);
@@ -235,8 +235,8 @@ class ArcGISDataLoader {
    * Returns features with geometry for highlighting/zooming on map
    */
   async queryWithGeometry(layerId: number, where: string = '1=1') {
-    return this.queryLayer(layerId, { 
-      where, 
+    return this.queryLayer(layerId, {
+      where,
       returnGeometry: true,
     });
   }
@@ -245,11 +245,11 @@ class ArcGISDataLoader {
    * Get district boundaries with geometry for map display
    */
   async getDistrictBoundaries(districtName?: string) {
-    const where = districtName 
+    const where = districtName
       ? `UPPER(name_en) = '${districtName.toUpperCase()}'`
       : '1=1';
-    return this.queryLayer(LAYERS.DISTRICT, { 
-      where, 
+    return this.queryLayer(LAYERS.DISTRICT, {
+      where,
       returnGeometry: true,
     });
   }
@@ -264,8 +264,8 @@ class ArcGISDataLoader {
     } else if (district) {
       where = `UPPER(district) = '${district.toUpperCase()}'`;
     }
-    return this.queryLayer(LAYERS.PROJECT, { 
-      where, 
+    return this.queryLayer(LAYERS.PROJECT, {
+      where,
       returnGeometry: true,
     });
   }
@@ -278,7 +278,7 @@ class ArcGISDataLoader {
       xmin, ymin, xmax, ymax,
       spatialReference: { wkid: 4326 }
     });
-    
+
     const queryUrl = `${this.baseUrl}/${layerId}/query`;
     const params = new URLSearchParams({
       geometry,
